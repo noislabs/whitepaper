@@ -4,11 +4,18 @@ Nois Network aims to bring randomness (or noise) to the Cosmos ecosystem by prov
 
 ## Abstract
 
-Blockchains are systems in which every node in a decentralized network can validate the state of a replicated database by independently executing transactions and comparing the results. In order to do that, all computations need to be determinstic. As soon as environmental is accessed, such as the system's clock or a local random number generator, nodes may come to different results and fall out of consensus.
+[Need for Randomness]
+Randomness is a basic building block for all sorts of applications. The use cases range from lotteries that fully rely on randomness over games that may have some random elements to probabilistic modeling, to simulations and governance applications.
 
-The operations performed on blockchains get more sophisticated every year. While Bitcoin only allows token sends, the next geneartion brought turing complete computations on chain (Ethereum), creating complex financial products and the first governance applications. Today we are seeing this idea laveraged more and more as the price for execution drops significantly on Layer 2 solutions and independent blockchains in Cosmos<sup>1</sup>. The usage of WebAssembly brings a sandboxing technology to blockchains that was designed to run at near native speed on today's CPUs (CosmWasm, NEAR). Multiple projects are working on rich governance applications and games<sup>2</sup>.
+[Problem of randomness in blockchain]
+Blockchains are systems in which every node in a decentralized network can validate the state of a replicated database by independently executing transactions and comparing the results. In order to do that, all computations need to be determinstic. When the node's specific context is accessed, such as the system's clock or a local random number generator, nodes may come to different results and fall out of consensus.
 
-Randomness is a basic building block for all sorts of applications. The use case range from lotteries that fully rely on randomness over games that may have some random elements to probabilistic modeling, simulations and governance applications.
+[How others solve this problem]
+TO_CHANGE (Need to be able to mention the problem in a more clear way. needs to be more specific to our project. We should ultimately have, other projects tried to solve this problem but got many limitations, gas fees, inefficiency, bad dev experience.)
+The operations performed on blockchains get more sophisticated every year. While Bitcoin only allows token sends, the next generation brought turing complete computations on chain (Ethereum), creating complex financial products and the first governance applications. Today we are seeing this idea leveraged more and more as the price for execution drops significantly on Layer 2 solutions and independent blockchains in Cosmos<sup>1</sup>. The usage of WebAssembly brings a sandboxing technology to blockchains that was designed to run at near native speed on today's CPUs (CosmWasm, NEAR). Multiple projects are working on rich governance applications and games<sup>2</sup>.
+
+[How we solve this problem]
+In this article, we describe how Nois brings decentralised randomness on chain and distributes it to a  multitude of other IBC enabled chains in a very secure, fast, decentralised, cost efficient, and developer-focused manner.
 
 ## The Naive Approach
 
@@ -20,17 +27,19 @@ Blockchain applications can access certain information from the environment, tha
 4. CosmWasm team decided to [not expose block hash](https://github.com/CosmWasm/wasmvm/issues/133) as this may falsely be assumed to be unpredictable but can be influenced by the block proposer.
 5. Block height has very low entropy as the height in which a transaction is included can be guessed.
 
-Another thing that was spotted in the wild is using signatures as randomness. A pre-defined signer is asked to sign a given challenge. However, [it turns out](https://medium.com/@simonwarta/signature-determinism-for-blockchain-developers-dbd84865a93e) that common signing algorithms produce a deterministic but not unique signature, such that the signer can choose whatever value suits them.
+[Is the following a 6th point?]
+Another thing that was spotted in the wild is using signatures as randomness: a pre-defined signer is asked to sign a given challenge. However, [it turns out](https://medium.com/@simonwarta/signature-determinism-for-blockchain-developers-dbd84865a93e) that common signing algorithms produce a deterministic but not unique signature, such that the signer can choose whatever value suits them.
 
 ## Our Approach
 
 Nois Network aims to provide a safe and secure solution to the problem that is native to the IBC world and provides the best possible user experience for a wide range of applications.
 
-In contrast to other consensus algorithms, Tendermint-based blockchains do not need randomness at block production layer. As a consequence no random value can trivially be passed to applications from consensus. So our randomness solition will live entirely on the app level, allowing us to keep block production going even when there is a hickup in the the randomness part.
+TO_CHANGE (shoulnt be the first thing. This is an optional nice feature that we have)
+In contrast to other consensus algorithms, Tendermint-based blockchains do not need randomness at block production layer. As a consequence, no random value can trivially be passed to applications from consensus. So our randomness solution will live entirely on the app level, allowing us to keep block production going, even when there is a hickup in the the randomness part.
 
-In the first iteration, Nois will use random beacons produced by the [drand] network, which is powered by a consortium of participants that generate randomness using multi-party computation. This is implemented using BLS threshold signatures, which produces unpredictable values that cannot be manipulated by any of the drand participants. The drand mainnet is instantiated by the [Legue of Entropy][loe], which operates it in production for more than two years. Filecoin relies on drand for block production.
+In the first iteration, Nois will use random beacons produced by the [drand] network, which is powered by a consortium of participants that generate randomness using multi-party computation. This is implemented using BLS threshold signatures, which produces unpredictable values that cannot be manipulated by any of the drand participants. The drand mainnet is instantiated by the [Legue of Entropy][loe], which has been operating it in production for more than two years. For example, Filecoin relies on drand for block production.
 
-Drand random beacons can be submitted to blockchains that perform BLS signature verification. This way we can build a random oracle that securely brings randomness on chain. This method was [described and proven in 2020 for CosmWasm](https://medium.com/@simonwarta/when-your-blockchain-needs-to-roll-the-dice-ed9da121f590). A few months later, this proof of concept was turned into production by [Terrand](https://docs.terrand.dev/). BLS verification is a computationally heavy operation, but laveraging the strength of the Rust optimizer and Wasm's near native execution speed, Drand beacons could be verified for less than 3$ in gas fees on Terra.
+Drand random beacons can be submitted to blockchains that perform BLS signature verification. This way we can build a random oracle that securely brings randomness on chain. This method was [described and proven in 2020 for CosmWasm](https://medium.com/@simonwarta/when-your-blockchain-needs-to-roll-the-dice-ed9da121f590). A few months later, this proof of concept was turned into production by [Terrand](https://docs.terrand.dev/). BLS verification is a computationally heavy operation, but leveraging the strength of the Rust optimizer and Wasm's near native execution speed, Drand beacons could be verified for less than 3$ in gas fees on Terra.
 
 The next step in the evolution is to make drand beacons easily accessible by as many dapps as possible in a way that is easy to use and affordable. In an ideal world a dapp developer would just do something like this:
 
@@ -47,8 +56,8 @@ The following steps are taken to get the randomness:
 
 1. Contract on a CosmWasm-enabled chain (such as Juno or Tgrade) sends a message to a Nois proxy contract on the same chain. A reply with further information regarding the job is sent to the original contract.
 2. The proxy contract sends an IBC message to its couter-part on the Nois Network where the job is put in the queue.
-3. Once the drand beacon of the correct round is released, a network of bots send it to the Nois Network for verification.
-4. After successful verfication the pending jobs for the round are processed. For every matching job, an IBC response with the beacon is sent.
+3. Once the drand beacon of the correct round is released, a network of bots sends it to the Nois Network for verification.
+4. After successful verfication, the pending jobs for the round are processed. For every matching job, an IBC response with the beacon is sent.
 5. The proxy contract receives the beacon and sends a callback to the original contract.
 
 ### Commit to Callback Time (C2C Time)

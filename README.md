@@ -19,8 +19,9 @@ Blockchain applications can access certain information from the environment, tha
 3. The block time of Tendermint ([BFT Time]) is of low entropy and can be influenced.
 4. CosmWasm team decided to [not expose block hash](https://github.com/CosmWasm/wasmvm/issues/133) as this may falsely be assumed to be unpredictable but can be influenced by the block proposer.
 5. Block height has very low entropy as the height in which a transaction is included can be guessed.
+6. Another thing that was spotted in the wild is using signatures as randomness. A pre-defined signer is asked to sign a given challenge. However, [it turns out](https://medium.com/@simonwarta/signature-determinism-for-blockchain-developers-dbd84865a93e) that common signing algorithms produce a deterministic but not unique signature, such that the signer can choose whatever value suits them.
 
-Another thing that was spotted in the wild is using signatures as randomness. A pre-defined signer is asked to sign a given challenge. However, [it turns out](https://medium.com/@simonwarta/signature-determinism-for-blockchain-developers-dbd84865a93e) that common signing algorithms produce a deterministic but not unique signature, such that the signer can choose whatever value suits them.
+To get relyable randomness, we need to do better.
 
 ## Our Approach
 

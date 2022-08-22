@@ -3,13 +3,6 @@
 Nois Network aims to bring randomness (or noise) to the Cosmos ecosystem by providing a safe and secure entropy source and distributing randomness in the form of [random beacons][cryptographic-beacons] to other Cosmos blockchains via [IBC].
 
 ## Table of contents
-- Abstract
-- The Naive Approach
-- Our Approach
-- How it works
-- Commit to Callback Time (C2C Time)
-- Alternative Solutions
-    Implement Nois as a smart contract
 
 # Table of Contents
 1. [Abstract](#abstract)

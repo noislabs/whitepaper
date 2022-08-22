@@ -2,6 +2,31 @@
 
 Nois Network aims to bring randomness (or noise) to the Cosmos ecosystem by providing a safe and secure entropy source and distributing randomness in the form of [random beacons][cryptographic-beacons] to other Cosmos blockchains via [IBC].
 
+## Table of contents
+- Abstract
+- The Naive Approach
+- Our Approach
+- How it works
+- Commit to Callback Time (C2C Time)
+- Alternative Solutions
+    Implement Nois as a smart contract
+
+# Table of Contents
+1. [Abstract](#abstract)
+2. [The Naive Approach](#the-naive-approach)
+3. [Our Approach](#our-approach)
+4. [Performance](#performance)
+5. [Cost Efficiency](#cost-efficiency)
+6. [Security](#security)
+7. [Decentralisation](#decentralisation)
+8. [Developer Oriented](#developer-oriented)
+9. [Further Work](#further-work)
+10. [Conclusion](#conclusion)
+
+
+
+
+
 ## Abstract
 
 Randomness is a basic building block for all sorts of applications. The use case range from lotteries that fully rely on randomness over games that may have some random elements to probabilistic modeling, simulations and governance applications.
@@ -50,11 +75,13 @@ The following steps are taken to get the randomness:
 
 1. Contract on a CosmWasm-enabled chain (such as Juno or Tgrade) sends a message to a Nois proxy contract on the same chain. A reply with further information regarding the job is sent to the original contract.
 2. The proxy contract sends an IBC message to its couter-part on the Nois Network where the job is put in the queue.
-3. Once the drand beacon of the correct round is released, a network of bots sends it to the Nois Network for verification.
+3. Once the drand beacon of the correct round is released, a network of bots send it to the Nois Network for verification.
 4. After successful verfication, the pending jobs for the round are processed. For every matching job, an IBC response with the beacon is sent.
 5. The proxy contract receives the beacon and sends a callback to the original contract.
 
-### Commit to Callback Time (C2C Time)
+### Performance
+
+#### 1-Commit to Callback Time (C2C Time)
 
 Each Drand round is published at fixed points in time calculated as follows:
 
@@ -75,7 +102,7 @@ The time between beacon publishing an the callback consists of the following com
 
 Once those steps are done, the callback is executed within 30 seconds of publishing. On a well configured network, average timings can be much faster though.
 
-#### Choice of round
+#### 2-Choice of round
 
 The application needs to commit to a round number before the beacon is revealed.
 Fortunately we have a relyable [BFT Time] but this is not perfectly accurate and can be behind. In case the contract thinks `publish_time` is not yet reached while the beacon is already published, an attacker can abuse the knowledge of the randomness. So we intoduce a duration `safety_margin` and require `publish_time` to be at least `safety_margin` after the current BFT time (`block_time`).
@@ -102,23 +129,31 @@ Assuming `safety_margin` is set generously to 2 seconds, the `round` calculated 
 
 This calculation can be generalized if an end time should be set in advance instead of closing right away. With flexible end times, the publish times of beacons can be matched and only the safety margin need to be considered.
 
-#### Summary
+#### 3-Short Block Times
 
-When comitting to a round in 2-32 seconds that needs roughly 10-30 seconds to be processed, you get a delay between commitment to callback of 12-62 seconds. Varous usecase specific optimization techniques are to be explored.
+The Nois network can consider to reduce block times from the typical 5-7 seconds in Cosmos to something shorter. Doing so has to be carefully tested in environments with many globally distributed validators. But seeing teams successfully testing 1s block times is promising.
 
-## Alternative Solutions
+#### 4-High Frequency Beacons
 
-Many alternative approaches to various parts of the solution have been discussed and discarded. Here are some of those.
+Right now drand emits a new beacon every 30 seconds. But there are plans to reduce that round time to something like 3 or 5 seconds. This will allow Nois to operate on higher frequency.
 
-### Verify on each app chain
+#### 5-Performance Summary
 
-Instead of verifying the beacon on one chain and then sending it one could also verify the beacon once per app chain, i.e. have a Terrand-like instance on Terra, Juno, Tgrade, …. The bot network would then need to submit the beacon to each chain. This would remove the need for a Nois chain and IBC relayers. It could also remove the time between publication and callback.
+When comitting to a round in 2-32 seconds that needs roughly 10-30 seconds to be processed, you get a delay between commitment to callback of 12-62 seconds. Various usecase specific optimization techniques are to be explored.
+This end-to-end randomness distribution speed can improve significantly with the upcoming drand frequency change.
+
+### Cost Efficiency
+
+
+#### 1-Verify on each app chain
+
+An alternative approach to verifying the beacon on one chain and then distributing it accross chains would be to verify the beacon once per app chain, i.e. have a Terrand-like instance on Terra, Juno, Tgrade, …. The bot network would then need to submit the beacon to each chain. This would remove the need for a Nois chain and IBC relayers. It could also remove the time between publication and callback.
 
 However, drand verification comsumes a lot of gas and doing that once per chain is potentially inefficient. When blockspace is limited, the beacon submission transaction might not get committed for a long time.
 
 There are pros and cons on both sides. But when thinking about hundreds of connected app chains the deduplication of the verification feels right. Also with IBC queries upcoming, [our state becomes your state](https://twitter.com/hdevalence/status/1555256686641786882).
 
-### Implement Nois as a smart contract
+#### 2-Implement Nois as a smart contract
 
 A drand verifier that is accessible via IBC can be implemented on an existing chain with CosmWasm. This would be easier to start with and would not require a new token. However, going for a custom chain has the following motivation:
 
@@ -140,29 +175,33 @@ A drand verifier that is accessible via IBC can be implemented on an existing ch
   5. We can use chain governance to upgrade the contract which is more transparent and safer than multisig upgradability.
   6. Due to permissioned contract uploads the use of a Wasm compiler with unbound compile time becomes possible, which can lead to faster verification.
 
+## Security
+* TODO
+
+## Decentralisation
+* TODO
+
+## Developer Oriented
+* TODO
+
 ## Further Work
 
 The solution above explains what we can do with technology available today. But we'll not stop there. The next steps might be the following (unsorted).
 
-### High Frequency Beacons
-
-Right now drand emits a new beacon every 30 seconds. But there are plans to reduce that round time to something like 3 or 5 seconds. This will allow Nois to operate on higher frequency.
-
-### Short Block Times
-
-The Nois network can consider to reduce block times from the typical 5-7 seconds in Cosmos to something shorter. Doing so has to be carefully tested in environments with many globally distributed validators. But seeing teams successfully testing 1s block times is promising.
-
-### IBC Queries
+### 1-IBC Queries
 
 We'll closely follow the development of IBC queries, which is a technology we assume to allow for faster round trips and lower fees.
 
-### Alternative Entropy Sources
+### 2-Alternative Entropy Sources
 
 We love what drand and the League of Entropy brought to the internet, which is nothing less than the first decentralized entropy source. But choice is important. Some applications may wish to sacrifice some of the security properties in order to get faster and cheaper randomness. Some users might demand governance voting for drand [MPC] participants. The options are to be explored but the network will be designed for multiple sources.
 
-### Internalizing randomness generation
+### 3-Internalizing randomness generation
 
 The node operators of the Nois Network could integrate randomness generation into their own operations. There has been work to [integrate random beacons into Tendermint](https://medium.com/@dgaminghub/arcade-tendermint-hack-with-built-in-threshold-bls-random-beacon-for-applications-a51eafb77f53) that could be explored. But also a second process that runs along with the validator node would be an option.
+
+## Conclusion
+* TODO
 
 ## Definitions
 

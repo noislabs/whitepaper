@@ -2,14 +2,6 @@
 
 The solution above explains what we can do with technology available today. But we'll not stop there. The next steps might be the following (unsorted).
 
-## High Frequency Beacons
-
-Right now drand emits a new beacon every 30 seconds. But there are plans to reduce that round time to something like 3 or 5 seconds. This will allow Nois to operate on higher frequency.
-
-## Short Block Times
-
-The Nois network can consider to reduce block times from the typical 5-7 seconds in Cosmos to something shorter. Doing so has to be carefully tested in environments with many globally distributed validators. But seeing teams successfully testing 1s block times is promising.
-
 ## IBC Queries
 
 We'll closely follow the development of IBC queries, which is a technology we assume to allow for faster round trips and lower fees.

@@ -33,7 +33,7 @@ We believe the burden of implementing drand verification once per contract or ev
 
 ### Architecture
 
-XXX Need diagram here
+![Diagram](img/diagram.png "Diagram")
 Multiple actors are involved in the Nois system:
 * Nois validators: these are the nodes that create and validate blocks on our
   chain. They are responsible for executing the transactions and run a consensus

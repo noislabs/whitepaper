@@ -8,7 +8,7 @@ An alternative approach to verifying the beacon on one chain and then distributi
 
 However, drand verification comsumes a lot of gas and doing that once per chain is potentially inefficient. When blockspace is limited, the beacon submission transaction might not get committed for a long time.
 
-There are pros and cons on both sides. But when thinking about hundreds of connected app chains the deduplication of the verification feels right. Also with IBC queries upcoming, [our state becomes your state](https://twitter.com/hdevalence/status/1555256686641786882).
+There are pros and cons on both sides. When thinking about hundreds of connected app chains the deduplication of the verification feels right. with IBC queries upcoming, [our state becomes your state](https://twitter.com/hdevalence/status/1555256686641786882) and thus it makes sense to have one "randomness" chain accessible from all chain very easily.
 
 ## The app chain model
 
@@ -23,10 +23,12 @@ A drand verifier that is accessible via IBC can be implemented on an existing ch
 - The ability to create overlapping validator and drand MPC sets is a way to incentivise drand node operators and get new players into Cosmos.
 - The following optimizations are possible:
   1. The drand verification contract is 550 KB large. Terrand had to split the code in two contracts to deploy it to Terra.
-     A custom chain can allow lager contract sizes.
+     A custom chain can allow lager contract sizes and we now have the logic
+     implemented in one contract.
   2. The verification consumes significant block space and may get expensive on other general purpose chains.
   3. CosmWasm allows pinning contracts. Those contracts are kept in memory and are loaded and executed faster.
-     We can utilize this feature on a custom chain.
+     We can utilize this feature on a custom chain and we can also reduce the
+     gas cost of verifying the beacons.
   4. CosmWasm has a somewhat unknown cronjob feature that allows governance to run contract execution in every block.
      That’s useful to e.g. process queues.
   5. We can use chain governance to upgrade the contract which is more transparent and safer than multisig upgradability.

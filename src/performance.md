@@ -66,7 +66,7 @@ is staring at a spinner waiting for a result. For a great UX it is crucial to ha
 bots that are well connected to drand nodes using various transports (HTTP, pubsub, gRPC) and
 submit a transaction to the Nois chain containing the beacon immediately when they first see it.
 
-If the bots had to scan the Noid chain or even various customer chains to check if a round
+If the bots had to scan the Nois chain or even various customer chains to check if a round
 was requested, valuable time is lost. A beacon request might already be in a mempool but is
 not yet committed to a block. Or it is in a block but the block's events are not yet indexed.
 

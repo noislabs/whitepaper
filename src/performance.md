@@ -58,6 +58,22 @@ This calculation can be generalized if an end time should be set in advance inst
 The Nois network can consider to reduce block times from the typical 5-7 seconds in Cosmos to something shorter. Doing so has to be carefully tested in environments with many globally distributed validators. Fortunately, there has been teams successfully testing 1s block times and thus we believe it's a viable path forward. 
 XXX Source for the 1s blocktime
 
+## Process all drand rounds
+
+The time between the publication of a random beacon and when it becomes available on chain is
+important for the user experience. Depending on product design, this may be the time an end user
+is staring at a spinner waiting for a result. For a great UX it is crucial to have a fast
+bots that are well connected to drand nodes using various transports (HTTP, pubsub, gRPC) and
+submit a transaction to the Nois chain containing the beacon immediately when they first see it.
+
+If the bots had to scan the Nois chain or even various customer chains to check if a round
+was requested, valuable time is lost. A beacon request might already be in a mempool but is
+not yet committed to a block. Or it is in a block but the block's events are not yet indexed.
+
+By processing all drand round on the Nois chain we remove communication overhead
+and speed up processing of each round. At the same time we optimize the chain for
+drand verification, ensuring this does not lead to performance or storage issues.
+
 ## Summary
 
 XXX I would remove totally this part, the numbers doesn't look great to be honest, it is not very selling.

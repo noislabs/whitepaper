@@ -18,7 +18,7 @@ dapps. We assume the following threat model:
 Given these two assumptions, the security of the model is pretty straightforward:
 * The Nois smart contract guarantees the correct verification of any beacons
   submitted to it.
-* The Nois chain guarantees the correct logic execution of the Noise smart
+* The Nois chain guarantees the correct logic execution of the Nois smart
   contract, i.e. it will reply to IBC queries with exactly the correct beacon,
   already validated
 

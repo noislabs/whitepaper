@@ -8,7 +8,7 @@ An alternative approach to verifying the beacon on one chain and then distributi
 
 However, drand verification comsumes a lot of gas and doing that once per chain is potentially inefficient. When blockspace is limited, the beacon submission transaction might not get committed for a long time.
 
-There are pros and cons on both sides. When thinking about hundreds of connected app chains the deduplication of the verification feels right. with IBC queries upcoming, [our state becomes your state](https://twitter.com/hdevalence/status/1555256686641786882) and thus it makes sense to have one "randomness" chain accessible from all chain very easily.
+There are pros and cons on both sides. When thinking about hundreds of connected app chains the deduplication of the verification feels right. With IBC queries upcoming, [our state becomes your state](https://twitter.com/hdevalence/status/1555256686641786882) and thus it makes sense to have one "randomness" chain accessible from all chain very easily.
 
 ## The app chain model
 

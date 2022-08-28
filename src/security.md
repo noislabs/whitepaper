@@ -10,7 +10,7 @@ dapps. We assume the following threat model:
 
 * Security of the Nois Network: This is a new Cosmos based chain and therefore
   there is a list of validators responsible for running the consensus. On Cosmos
-  the validators are ranked by reputation (highest uptime, number of chains etc)
+  the validators are ranked by reputation (highest uptime, number of chains etc).
   This list provdes a reliable source of validators already. In the future we
   want to expand our validator set to be more permissionless but also containing
   some independent organizations similar to the drand network.

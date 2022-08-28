@@ -71,7 +71,8 @@ was requested, valuable time is lost. A beacon request might already be in a mem
 not yet committed to a block. Or it is in a block but the block's events are not yet indexed.
 
 By processing all drand round on the Nois chain we remove communication overhead
-and speed up processing of each round.
+and speed up processing of each round. At the same time we optimize the chain for
+drand verification, ensuring this does not lead to performance or storage issues.
 
 ## Summary
 

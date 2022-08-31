@@ -8,5 +8,5 @@
   - [Security](./security.md)
   - [Performance](./performance.md)
   - [Cost Efficiency](./cost_efficiency.md)
-  - [Developer Focussed](./developer_focussed.md)
+  - [Developer Friendly](./developer_friendly.md)
 - [Further Work](./further_work.md)

@@ -4,7 +4,7 @@ Nois Network aims to provide a safe and secure solution native to the IBC world 
 
 
 In contrast to other consensus algorithms, Tendermint-based blockchains do not
-need randomness at block production layer. Therefore, for our first iteration,
+need or provide randomness at block production layer. Therefore, for our first iteration,
 we are building our stack entirely on the application level of the chain (i.e.
 as a collection of smart contracts and offchain bots). This design decision
 makes it really easy for developers to use our technology since randomness can

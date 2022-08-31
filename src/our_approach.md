@@ -2,14 +2,6 @@
 
 Nois Network aims to provide a safe and secure solution native to the IBC world and to provide the best possible user experience for a wide range of applications.
 
-<!---
-Is the following paragraph really necessary ? "allowing us to keep block
-production going even when there is a hickup in the randomness part" sounds
-quite bad tbh - if our chain can't deliver randomness anymore, what do we care
-about still having the consensus running ? 
-Here's a  tentative with a different angle:
-In contrast to other consensus algorithms, Tendermint-based blockchains do not need randomness at block production layer. As a consequence no random value can trivially be passed to applications from consensus. So our randomness solution will live entirely on the app level, allowing us to keep block production going even when there is a hickup in the the randomness part.
--->
 
 In contrast to other consensus algorithms, Tendermint-based blockchains do not
 need randomness at block production layer. Therefore, for our first iteration,
@@ -29,7 +21,7 @@ The next step in the evolution is to make drand beacons easily accessible by as 
 let beacon: [u8; 32] = await getRandom();
 ```
 
-We believe the burden of implementing drand verification once per contract or even once per blockchain is too much in an ecosystem that is preparing for thousands of independent and inter-connected blockchains. Instead of executing the drand verification on the chain of the dapp, the Nois chain is acting as the randomness layer in the Cosmos ecosystem which is available via IBC queries.
+We believe the burden of implementing drand verification once per contract or even once per blockchain is too much in an ecosystem that is preparing for thousands of independent and inter-connected blockchains. Instead of executing the drand verification on the chain of the dapp, the Nois chain is acting as the randomness layer in the Cosmos ecosystem which is available via IBC.
 
 ## Architecture
 
@@ -38,16 +30,15 @@ Multiple actors are involved in the Nois system:
 * Nois validators: these are the nodes that create and validate blocks on our
   chain. They are responsible for executing the transactions and run a consensus
   on the output.
-* Nois bot are responsible for fetching the randomness from the drand network
+* Nois bots are responsible for fetching the randomness from the drand network
   and submits it to the Nois smart contract that verifies it.
 * Nois smart contract contains the logic to verify a drand randomness but also
-  to incentivize the Nois bot and is the recipient of any IBC calls made on
+  to incentivize the Nois bots and is the recipient of any IBC calls made on
   other chains.
 * Nois proxy contract lives on any enduser chain (e.g. Juno, Osmosis etc) and is
   the main entry point for users to fetch randomness from.
-* Proxy bots are responsible for relaying the randomness from the Nois smart
-  contract to the Proxy contract, they are "relayers" for the IBC queries.
-  XXX To check terminology here
+* IBC relayers are responsible for relaying the randomness from the Nois smart
+  contract to the Proxy contract.
 
 ## Workflow
 
@@ -56,10 +47,8 @@ The following steps are taken to get the randomness:
 1. Contract on a CosmWasm-enabled chain sends a message to a Nois proxy contract on the same chain. A reply with further information regarding the job is sent to the original contract.
 2. The proxy contract sends an IBC message to its couter-part on the Nois Network where the job is put in the queue.
 3. Once the drand beacon of the correct round is released, Nois bots send it to the Nois smart contract for verification, as a transaction.
-4. After successful verfication, the pending jobs for the round are processed. For every matching job, an IBC response with the beacon is sent, thanks to the proxy bots.
+4. After successful verfication, the pending jobs for the round are processed. For every matching job, an IBC response with the beacon is sent, thanks to the IBC relayers.
 5. The proxy contract receives the beacon and sends a callback to the original contract.
-
-XXX: Need diagram here
 
 [drand]: https://drand.love
 [loe]: https://en.wikipedia.org/wiki/League_of_entropy

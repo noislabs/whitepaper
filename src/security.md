@@ -26,7 +26,7 @@ Given these two assumptions, the security of the model is pretty straightforward
 * The Nois smart contract guarantees the correct verification of any beacons
   submitted to it.
 * The Nois chain guarantees the correct logic execution of the Nois smart
-  contract, i.e. it will reply to IBC queries with exactly the correct beacon,
+  contract, i.e. it will reply to IBC beacon requests with exactly the correct beacon,
   already validated
 
 ## Application Security
@@ -42,7 +42,7 @@ for the _next_ randomness being available. This is exactly the main API endpoint
 Nois contracts are offering. This reduces the chance of using the randomness
 source "insecurely".
 
-We also offer a "getRandomness(round)" endpoint that is to manipulate with care,
+We may also offer a "getRandomness(round)" endpoint that is to manipulate with care,
 only for dapps developers that exactly know what they way, as this can be useful
 for a certain number of use cases still.
   

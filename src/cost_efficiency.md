@@ -28,7 +28,7 @@ A drand verifier that is accessible via IBC can be implemented on an existing ch
   2. The verification consumes significant block space and may get expensive on other general purpose chains.
   3. CosmWasm allows pinning contracts. Those contracts are kept in memory and are loaded and executed faster.
      We can utilize this feature on a custom chain and we can also reduce the
-     gas cost of verifying the beacons.
+     cost of verifying the beacons.
   4. CosmWasm has a somewhat unknown cronjob feature that allows governance to run contract execution in every block.
      That’s useful to e.g. process queues.
   5. We can use chain governance to upgrade the contract which is more transparent and safer than multisig upgradability.

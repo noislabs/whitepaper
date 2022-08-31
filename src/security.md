@@ -2,18 +2,25 @@
 
 Nois Network provides a unbiasable publicly verifiable source of randomness to
 dapps. We assume the following threat model:
-* Security of the drand network: At the moment, the Nois Network relies on the
+## Security of the drand network
+
+ At the moment, the Nois Network relies on the
  drand network. Drand relies on honest majority assumption, i.e. more than 50%
  of the drand operators must be honest, and so far this assumption has held in
  practice thanks to the variety in terms of nodes: different jurisdictions, platforms, 
- OS, and deployments.
+ OS, and deployments. Drand has stood up through time as it is being used by multiple projects,
+ including the popular Filecoin blockchain for more than 2 years without a single [downtime](https://status.drand.love/).
 
-* Security of the Nois Network: This is a new Cosmos based chain and therefore
+## Security of the Nois Network
+
+ This is a new Cosmos based chain and therefore
   there is a list of validators responsible for running the consensus. On Cosmos
   the validators are ranked by reputation (highest uptime, number of chains etc).
-  This list provdes a reliable source of validators already. In the future we
-  want to expand our validator set to be more permissionless but also containing
-  some independent organizations similar to the drand network.
+  This list provdes a reliable source of validators already. The consensus relies 
+  on the supermajority assumption, i.e. 2/3 + 1 of total stake must be held by 
+  honests validators.
+  In the future we want to expand our validator set to be more permissionless but 
+  also containing some independent organizations similar to the drand network.
 
 Given these two assumptions, the security of the model is pretty straightforward:
 * The Nois smart contract guarantees the correct verification of any beacons

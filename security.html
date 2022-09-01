@@ -4,10 +4,7 @@
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
         <title>Security - Nois Network</title>
-
-
         <!-- Custom HTML head -->
-        
         <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -19,18 +16,15 @@
         <link rel="stylesheet" href="css/general.css">
         <link rel="stylesheet" href="css/chrome.css">
         <link rel="stylesheet" href="css/print.css" media="print">
-
         <!-- Fonts -->
         <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
         <link rel="stylesheet" href="fonts/fonts.css">
-
         <!-- Highlight.js Stylesheets -->
         <link rel="stylesheet" href="highlight.css">
         <link rel="stylesheet" href="tomorrow-night.css">
         <link rel="stylesheet" href="ayu-highlight.css">
 
         <!-- Custom theme stylesheets -->
-
     </head>
     <body>
         <!-- Provide site root to javascript -->
@@ -81,7 +75,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded affix "><a href="title.html">Nois Network</a></li><li class="chapter-item expanded "><a href="abstract.html"><strong aria-hidden="true">1.</strong> Abstract</a></li><li class="chapter-item expanded "><a href="the_strawman_approach.html"><strong aria-hidden="true">2.</strong> The Strawman Approach</a></li><li class="chapter-item expanded "><a href="our_approach.html"><strong aria-hidden="true">3.</strong> Our Approach</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="security.html" class="active"><strong aria-hidden="true">3.1.</strong> Security</a></li><li class="chapter-item expanded "><a href="performance.html"><strong aria-hidden="true">3.2.</strong> Performance</a></li><li class="chapter-item expanded "><a href="cost_efficiency.html"><strong aria-hidden="true">3.3.</strong> Cost Efficiency</a></li><li class="chapter-item expanded "><a href="developer_focussed.html"><strong aria-hidden="true">3.4.</strong> Developer Focussed</a></li></ol></li><li class="chapter-item expanded "><a href="further_work.html"><strong aria-hidden="true">4.</strong> Further Work</a></li></ol>
+                <ol class="chapter"><li class="chapter-item expanded affix "><a href="title.html">Nois Network</a></li><li class="chapter-item expanded "><a href="abstract.html"><strong aria-hidden="true">1.</strong> Abstract</a></li><li class="chapter-item expanded "><a href="the_strawman_approach.html"><strong aria-hidden="true">2.</strong> The Strawman Approach</a></li><li class="chapter-item expanded "><a href="our_approach.html"><strong aria-hidden="true">3.</strong> Our Approach</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="security.html" class="active"><strong aria-hidden="true">3.1.</strong> Security</a></li><li class="chapter-item expanded "><a href="performance.html"><strong aria-hidden="true">3.2.</strong> Performance</a></li><li class="chapter-item expanded "><a href="cost_efficiency.html"><strong aria-hidden="true">3.3.</strong> Cost Efficiency</a></li><li class="chapter-item expanded "><a href="developer_friendly.html"><strong aria-hidden="true">3.4.</strong> Developer Friendly</a></li></ol></li><li class="chapter-item expanded "><a href="further_work.html"><strong aria-hidden="true">4.</strong> Further Work</a></li></ol>
             </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
@@ -89,7 +83,7 @@
         <div id="page-wrapper" class="page-wrapper">
 
             <div class="page">
-                                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar-hover-placeholder"></div>
                 <div id="menu-bar" class="menu-bar sticky bordered">
                     <div class="left-buttons">
                         <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
@@ -122,7 +116,6 @@
                         <a href="https://github.com/noislabs/whitepaper/edit/main/src/security.md" title="Suggest an edit" aria-label="Suggest an edit">
                             <i id="git-edit-button" class="fa fa-edit"></i>
                         </a>
-
                     </div>
                 </div>
 
@@ -136,7 +129,6 @@
                         </ul>
                     </div>
                 </div>
-
                 <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
                 <script type="text/javascript">
                     document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
@@ -151,29 +143,28 @@
                         <h1 id="security"><a class="header" href="#security">Security</a></h1>
 <p>Nois Network provides a unbiasable publicly verifiable source of randomness to
 dapps. We assume the following threat model:</p>
-<ul>
-<li>
-<p>Security of the drand network: At the moment, the Nois Network relies on the
+<h2 id="security-of-the-drand-network"><a class="header" href="#security-of-the-drand-network">Security of the drand network</a></h2>
+<p>At the moment, the Nois Network relies on the
 drand network. Drand relies on honest majority assumption, i.e. more than 50%
 of the drand operators must be honest, and so far this assumption has held in
 practice thanks to the variety in terms of nodes: different jurisdictions, platforms, 
-OS, and deployments.</p>
-</li>
-<li>
-<p>Security of the Nois Network: This is a new Cosmos based chain and therefore
+OS, and deployments. Drand has stood up through time as it is being used by multiple projects,
+including the popular Filecoin blockchain for more than 2 years without a single <a href="https://status.drand.love/">downtime</a>.</p>
+<h2 id="security-of-the-nois-network"><a class="header" href="#security-of-the-nois-network">Security of the Nois Network</a></h2>
+<p>This is a new Cosmos based chain and therefore
 there is a list of validators responsible for running the consensus. On Cosmos
 the validators are ranked by reputation (highest uptime, number of chains etc).
-This list provdes a reliable source of validators already. In the future we
-want to expand our validator set to be more permissionless but also containing
-some independent organizations similar to the drand network.</p>
-</li>
-</ul>
+This list provdes a reliable source of validators already. The consensus relies 
+on the supermajority assumption, i.e. 2/3 + 1 of total stake must be held by 
+honests validators.
+In the future we want to expand our validator set to be more permissionless but 
+also containing some independent organizations similar to the drand network.</p>
 <p>Given these two assumptions, the security of the model is pretty straightforward:</p>
 <ul>
 <li>The Nois smart contract guarantees the correct verification of any beacons
 submitted to it.</li>
 <li>The Nois chain guarantees the correct logic execution of the Nois smart
-contract, i.e. it will reply to IBC queries with exactly the correct beacon,
+contract, i.e. it will reply to IBC beacon requests with exactly the correct beacon,
 already validated</li>
 </ul>
 <h2 id="application-security"><a class="header" href="#application-security">Application Security</a></h2>
@@ -187,7 +178,7 @@ submitting the right ticket. At the time the lottery finish, a dapp should ask
 for the <em>next</em> randomness being available. This is exactly the main API endpoint
 Nois contracts are offering. This reduces the chance of using the randomness
 source &quot;insecurely&quot;.</p>
-<p>We also offer a &quot;getRandomness(round)&quot; endpoint that is to manipulate with care,
+<p>We may also offer a &quot;getRandomness(round)&quot; endpoint that is to manipulate with care,
 only for dapps developers that exactly know what they way, as this can be useful
 for a certain number of use cases still.</p>
 
@@ -198,11 +189,9 @@ for a certain number of use cases still.</p>
                             <a rel="prev" href="our_approach.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                                 <i class="fa fa-angle-left"></i>
                             </a>
-
                             <a rel="next" href="performance.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                                 <i class="fa fa-angle-right"></i>
                             </a>
-
                         <div style="clear: both"></div>
                     </nav>
                 </div>
@@ -212,7 +201,6 @@ for a certain number of use cases still.</p>
                     <a rel="prev" href="our_approach.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                         <i class="fa fa-angle-left"></i>
                     </a>
-
                     <a rel="next" href="performance.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                         <i class="fa fa-angle-right"></i>
                     </a>
@@ -220,24 +208,16 @@ for a certain number of use cases still.</p>
 
         </div>
 
-
-
-
         <script type="text/javascript">
             window.playground_copyable = true;
         </script>
-
-
         <script src="elasticlunr.min.js" type="text/javascript" charset="utf-8"></script>
         <script src="mark.min.js" type="text/javascript" charset="utf-8"></script>
         <script src="searcher.js" type="text/javascript" charset="utf-8"></script>
-
         <script src="clipboard.min.js" type="text/javascript" charset="utf-8"></script>
         <script src="highlight.js" type="text/javascript" charset="utf-8"></script>
         <script src="book.js" type="text/javascript" charset="utf-8"></script>
 
         <!-- Custom JS scripts -->
-
-
     </body>
 </html>

@@ -9,6 +9,7 @@ Blockchain applications can access certain information from the environment, tha
 5. Block height has very low entropy as the height in which a transaction is included can be guessed.
 6. Another thing that was spotted in the wild is using signatures as randomness. A pre-defined signer is asked to sign a given challenge. However, [it turns out](https://medium.com/@simonwarta/signature-determinism-for-blockchain-developers-dbd84865a93e) that common signing algorithms produce a deterministic but not unique signature, such that the signer can choose whatever value suits them.
 
-To get relyable randomness, we need to do better.
+To get relyable randomness, we need to rely on better technology which may not
+be embedded in the native blockchain.
 
 [bft time]: https://docs.tendermint.com/master/spec/consensus/bft-time.html

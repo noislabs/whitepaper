@@ -1,6 +1,6 @@
 # Security
 
-Nois Network provides a unbiasable publicly verifiable source of randomness to
+Nois Network provides an unbiasable publicly verifiable source of randomness to
 dapps. We assume the following threat model:
 ## Security of the drand network
 
@@ -16,10 +16,10 @@ dapps. We assume the following threat model:
  This is a new Cosmos based chain and therefore
   there is a list of validators responsible for running the consensus. On Cosmos
   the validators are ranked by reputation (highest uptime, number of chains etc).
-  This list provdes a reliable source of validators already. The consensus relies 
+  This list provides a reliable source of validators already. The consensus relies 
   on the supermajority assumption, i.e. 2/3 + 1 of total stake must be held by 
-  honests validators.
-  In the future we want to expand our validator set to be more permissionless but 
+  honest validators.
+  In the future, we want to expand our validator set to be more permissionless but 
   also containing some independent organizations similar to the drand network.
 
 Given these two assumptions, the security of the model is pretty straightforward:

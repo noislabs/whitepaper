@@ -141,11 +141,11 @@
                 <div id="content" class="content">
                     <main>
                         <h1 id="cost-efficiency"><a class="header" href="#cost-efficiency">Cost Efficiency</a></h1>
-<p>Nois uses highly efficient Tendermint, IBC and CosmWasm technology to provide a cost efficient solution to users.</p>
+<p>Nois uses highly efficient Tendermint, IBC and CosmWasm technology to provide a cost-efficient solution to users.</p>
 <h2 id="verify-on-each-app-chain"><a class="header" href="#verify-on-each-app-chain">Verify on each app chain</a></h2>
-<p>An alternative approach to verifying the beacon on one chain and then distributing it accross chains would be to verify the beacon once per app chain, i.e. have a Terrand-like instance on Terra, Juno, Tgrade, …. The bot network would then need to submit the beacon to each chain. This would remove the need for a Nois chain and IBC relayers. It could also remove the time between publication and callback.</p>
-<p>However, drand verification comsumes a lot of gas and doing that once per chain is potentially inefficient. When blockspace is limited, the beacon submission transaction might not get committed for a long time.</p>
-<p>There are pros and cons on both sides. When thinking about hundreds of connected app chains the deduplication of the verification feels right. With IBC queries upcoming, <a href="https://twitter.com/hdevalence/status/1555256686641786882">our state becomes your state</a> and thus it makes sense to have one &quot;randomness&quot; chain accessible from all chain very easily.</p>
+<p>An alternative approach to verifying the beacon on one chain and then distributing it across chains would be to verify the beacon once per app chain, i.e. have a Terrand-like instance on Terra, Juno, Tgrade, …. The bot network would then need to submit the beacon to each chain. This would remove the need for a Nois chain and IBC relayers. It could also remove the time between publication and callback.</p>
+<p>However, drand verification consumes a lot of gas and doing that once per chain is potentially inefficient. When blockspace is limited, the beacon submission transaction might not get committed for a long time.</p>
+<p>There are pros and cons on both sides. When thinking about hundreds of connected app chains, the deduplication of the verification feels right. With IBC queries upcoming, <a href="https://twitter.com/hdevalence/status/1555256686641786882">our state becomes your state</a> and thus it makes sense to have one &quot;randomness&quot; chain accessible from all chain very easily.</p>
 <h2 id="the-app-chain-model"><a class="header" href="#the-app-chain-model">The app chain model</a></h2>
 <p>A drand verifier that is accessible via IBC can be implemented on an existing chain with CosmWasm. This would be easier to start with and would not require a new token. However, going for a custom app chain has the following motivation:</p>
 <ul>
@@ -154,21 +154,21 @@ The mentality in the ecosystem is to have many chains that are independent and i
 The tooling and people are ready for many chains.</li>
 <li>In a world with competing app chains that host our users, running on one of those chains makes us biased towards this chain.
 Being neutral regarding chains is very helpful in politics.</li>
-<li>The randomness chain would not halt if the smart contract chains halts.</li>
+<li>The randomness chain would not halt if the smart contract chain halts.</li>
 <li>The ability to create overlapping validator and drand MPC sets is a way to incentivise drand node operators and get new players into Cosmos.</li>
 <li>The following optimizations are possible:
 <ol>
 <li>The drand verification contract is 550 KB large. Terrand had to split the code in two contracts to deploy it to Terra.
-A custom chain can allow lager contract sizes and we now have the logic
+A custom chain can allow larger contract sizes and we now have the logic
 implemented in one contract.</li>
 <li>The verification consumes significant block space and may get expensive on other general purpose chains.</li>
 <li>CosmWasm allows pinning contracts. Those contracts are kept in memory and are loaded and executed faster.
-We can utilize this feature on a custom chain and we can also reduce the
+We can utilize this feature on a custom chain, and we can also reduce the
 cost of verifying the beacons.</li>
 <li>CosmWasm has a somewhat unknown cronjob feature that allows governance to run contract execution in every block.
 That’s useful to e.g. process queues.</li>
-<li>We can use chain governance to upgrade the contract which is more transparent and safer than multisig upgradability.</li>
-<li>Due to permissioned contract uploads the use of a Wasm compiler with unbound compile time becomes possible,
+<li>We can use chain governance to upgrade the contract, which is more transparent and safer than multisig upgradability.</li>
+<li>Due to permissioned contract uploads, the use of a Wasm compiler with unbound compile time becomes possible,
 which can lead to faster verification.</li>
 </ol>
 </li>

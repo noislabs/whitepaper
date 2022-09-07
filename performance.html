@@ -142,17 +142,17 @@
                     <main>
                         <h1 id="performance"><a class="header" href="#performance">Performance</a></h1>
 <h2 id="commit-to-callback-time-c2c-time"><a class="header" href="#commit-to-callback-time-c2c-time">Commit to Callback Time (C2C Time)</a></h2>
-<p>Each Drand round is published at fixed points in time calculated as follows:</p>
+<p>Each Drand round is published at fixed points in time, calculated as follows:</p>
 <pre><code>publish_time := genesis + (round - 1) * roundTime
 </code></pre>
-<p>where <code>genesis</code> is the drand network's start time (UNIX timestamp), <code>round</code> is an incremening integer starting at 1 and <code>roundTime</code> is the drand round time in seconds. At the beginning, <code>roundTime</code> is 30s but the drand project is planning to release a new network with much higher frequency (3-6s).</p>
+<p>where <code>genesis</code> is the drand network's start time (UNIX timestamp), <code>round</code> is an incrementing integer starting at 1 and <code>roundTime</code> is the drand round time in seconds. At the beginning, <code>roundTime</code> is 30s but the drand project is planning to release a new network with much higher frequency (3-6s).</p>
 <p>Once this <code>publish_time</code> is reached, the randomness needs to be considered public. No matter if the chain or the contract knows the value already, any user can know the random value by observing the off-chain drand network. So it is important that after <code>publish_time</code> no actions for that round are allowed anymore. Think of it as closing submission of lottery tickets. Now the round should be processed as fast as possible in order to reveal the results and allow to continue the operation in case the next steps depend on it.</p>
 <p>The time between beacon publishing an the callback consists of the following components:</p>
 <ul>
-<li><strong>Nois bots submission:</strong> bots should observe the drand gossip network through varius communication protocols. Once a new round is found, they should craft a transaction, sign it and sent it to the Nois mempool. Note that only the fastest submission of one of the bots matters. When well connected, this should be doable in under 1 second. This layer is completely <strong>permissionless</strong>, anyone can participate and get compensated for this work.</li>
-<li><strong>Block inclusion time:</strong> When the beacon is in the mempool, the chain should ensure it is included in a block as fast as possible. With 5 second block times and an inclusion in the first or second block, this should be up to 10 seconds. The same transaction processes pending jobs and sends IBC messages. The block is executed in well under 1 second.</li>
-<li><strong>IBC relaying:</strong> An IBC relayer picks up the message from the Nois chain and relays it to the destination chain. This depends on well configured and well connected relayers as well as availability of block space on the destination chain. In order to be included as fast as possible, the relayer should pay a transaction fee that is accepted by all validators. But in a high trafic sitiation, we don't get guearantees to be included quickly. So 5-20 seconds is a reasonable estimate.</li>
-<li><strong>Acknowledgement:</strong> An IBC acknowledgement is sent to Nois but this is nothing the contract needs to wait for.</li>
+<li><strong>Nois bots submission:</strong> bots should observe the drand gossip network through various communication protocols. Once a new round is found, they should craft a transaction, sign it and sent it to the Nois mempool. Note that only the fastest submission of one of the bots matters. When well-connected, this should be doable in under 1 second. This layer is completely <strong>permissionless</strong>, anyone can participate and get compensated for this work.</li>
+<li><strong>Block inclusion time:</strong> When the beacon is in the mempool, the chain should ensure it is included in a block as fast as possible. With 5-second block times and an inclusion in the first or second block, this should be up to 10 seconds. The same transaction processes pending jobs and sends IBC messages. The block is executed in well under 1 second.</li>
+<li><strong>IBC relaying:</strong> An IBC relayer picks up the message from the Nois chain and relays it to the destination chain. This depends on well configured and well-connected relayers as well as availability of block space on the destination chain. In order to be included as fast as possible, the relayer should pay a transaction fee that is accepted by all validators. But in a high traffic situation, we don't get guarantees to be included quickly. So 5-20 seconds is a reasonable estimate.</li>
+<li><strong>Acknowledgement:</strong> An IBC acknowledgement is sent to Nois, but this is nothing the contract needs to wait for.</li>
 </ul>
 <p>Once those steps are done, the callback is executed within 30 seconds of publishing. On a well configured network, and depending on the block time, average timings can be much faster though.</p>
 <h2 id="choice-of-round"><a class="header" href="#choice-of-round">Choice of round</a></h2>
@@ -161,8 +161,8 @@ XXX Do we really need this ? I really dont get why we need a safety margin: at t
 What I am missing ?
 -->
 <p>The application needs to commit to a round number before the beacon is revealed.
-Fortunately we have a reliable <a href="https://docs.tendermint.com/master/spec/consensus/bft-time.html">BFT Time</a> but this is not perfectly accurate and can be behind. In case the contract thinks <code>publish_time</code> is not yet reached while the beacon is already published, an attacker can abuse the knowledge of the randomness. So we intoduce a duration <code>safety_margin</code> and require <code>publish_time</code> to be at least <code>safety_margin</code> after the current BFT time (<code>block_time</code>).</p>
-<p>Using the formular from above, we want</p>
+Fortunately we have a reliable <a href="https://docs.tendermint.com/master/spec/consensus/bft-time.html">BFT Time</a> but this is not perfectly accurate and can be behind. In case the contract thinks <code>publish_time</code> is not yet reached while the beacon is already published, an attacker can abuse the knowledge of the randomness. So we introduce a duration <code>safety_margin</code> and require <code>publish_time</code> to be at least <code>safety_margin</code> after the current BFT time (<code>block_time</code>).</p>
+<p>Using the formula from above, we want</p>
 <pre><code>(1) publish_time := genesis + (round - 1) * 30
 (2) publish_time &gt;= block_time + safety_margin
 
@@ -175,20 +175,20 @@ round &gt;= ((block_time + safety_margin - genesis) / 30) + 1
 <pre><code>round := ceil((block_time + safety_margin - genesis) / 30) + 1
 </code></pre>
 <p>Assuming <code>safety_margin</code> is set generously to 2 seconds, the <code>round</code> calculated that way is 2-32 seconds in the future.</p>
-<p>This calculation can be generalized if an end time should be set in advance instead of closing right away. With flexible end times, the publish times of beacons can be matched and only the safety margin need to be considered.</p>
+<p>This calculation can be generalized if an end time should be set in advance instead of closing right away. With flexible end times, the publishing times of beacons can be matched, and only the safety margin need to be considered.</p>
 <h2 id="short-block-times"><a class="header" href="#short-block-times">Short Block Times</a></h2>
-<p>The Nois network can consider to reduce block times from the typical 5-7 seconds in Cosmos to something shorter. Doing so has to be carefully tested in environments with many globally distributed validators. Fortunately, there has been teams successfully testing 1s block times and thus we believe it's a viable path forward. <a href="https://twitter.com/fekunze/status/1542490680446050304">1</a>, <a href="https://twitter.com/crypto25807202/status/1551197364529967104">2</a>, <a href="https://docs.seinetwork.io/introduction/overview">3</a></p>
+<p>The Nois network can consider reducing block times from the typical 5-7 seconds in Cosmos to something shorter. Doing so has to be carefully tested in environments with many globally distributed validators. Fortunately, there has been teams successfully testing 1s block times and thus we believe it's a viable path forward. <a href="https://twitter.com/fekunze/status/1542490680446050304">1</a>, <a href="https://twitter.com/crypto25807202/status/1551197364529967104">2</a>, <a href="https://docs.seinetwork.io/introduction/overview">3</a></p>
 <h2 id="process-all-drand-rounds"><a class="header" href="#process-all-drand-rounds">Process all drand rounds</a></h2>
 <p>The time between the publication of a random beacon and when it becomes available on chain is
 important for the user experience. Depending on product design, this may be the time an end user
 is staring at a spinner waiting for a result. For a great UX it is crucial to have a fast
-bots that are well connected to drand nodes using various transports (HTTP, pubsub, gRPC) and
+bots that are well-connected to drand nodes using various transports (HTTP, pubsub, gRPC) and
 submit a transaction to the Nois chain containing the beacon immediately when they first see it.</p>
 <p>If the bots had to scan the Nois chain or even various customer chains to check if a round
 was requested, valuable time is lost. A beacon request might already be in a mempool but is
 not yet committed to a block. Or it is in a block but the block's events are not yet indexed.</p>
-<p>By processing all drand round on the Nois chain we remove communication overhead
-and speed up processing of each round. At the same time we optimize the chain for
+<p>By processing all drand round on the Nois chain, we remove communication overhead
+and speed up processing of each round. At the same time, we optimize the chain for
 drand verification, ensuring this does not lead to performance or storage issues.</p>
 
                     </main>

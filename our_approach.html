@@ -149,15 +149,15 @@ as a collection of smart contracts and offchain bots). This design decision
 makes it really easy for developers to use our technology since randomness can
 be consumed onchain only via the usage of a simple library.</p>
 <p>In the first iteration, Nois will use random beacons produced by the <a href="https://drand.love">drand</a> network, which is powered by a consortium of participants that generate randomness using multi-party computation. Each randomness is associated with a round and is delivered periodically, i.e. there is a bijective mapping between the drand round and the wallclock time. The randomness is based from BLS threshold signatures, which produces unpredictable values that cannot be manipulated by any of the drand participants. The drand mainnet is instantiated by the <a href="https://en.wikipedia.org/wiki/League_of_entropy">Legue of Entropy</a>, which has been operating it in production for more than two years. For example, Filecoin relies on drand for block production and its storage proofs.</p>
-<p>Drand random beacons can be submitted to blockchains that perform BLS signature verification. This way we can build a random oracle that securely brings randomness on chain. This method was <a href="https://medium.com/@simonwarta/when-your-blockchain-needs-to-roll-the-dice-ed9da121f590">described and proven in 2020 for CosmWasm</a>. A few months later, this proof of concept was turned into production by <a href="https://docs.terrand.dev/">Terrand</a>. BLS verification is a computationally heavy operation, but leveraging the strength of the Rust optimizer and Wasm's near native execution speed, Drand beacons could be verified for less than 3$ in gas fees on Terra.</p>
-<p>The next step in the evolution is to make drand beacons easily accessible by as many dapps as possible in a way that is easy to use and affordable. In an ideal world a dapp developer would just do something like this:</p>
+<p>Drand random beacons can be submitted to blockchains that perform BLS signature verification. This way, we can build a random oracle that securely brings randomness on chain. This method was <a href="https://medium.com/@simonwarta/when-your-blockchain-needs-to-roll-the-dice-ed9da121f590">described and proven in 2020 for CosmWasm</a>. A few months later, this proof of concept was turned into production by <a href="https://docs.terrand.dev/">Terrand</a>. BLS verification is a computationally heavy operation, but leveraging the strength of the Rust optimizer and Wasm's near native execution speed, Drand beacons could be verified for less than $3 in gas fees on Terra.</p>
+<p>The next step in the evolution is to make drand beacons easily accessible by as many dapps as possible in a way that is easy to use and affordable. In an ideal world, a dapp developer would just do something like this:</p>
 <pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
 </span>// pseudo-code
 let beacon: [u8; 32] = await getRandom();
 <span class="boring">}
 </span></code></pre></pre>
-<p>We believe the burden of implementing drand verification once per contract or even once per blockchain is too much in an ecosystem that is preparing for thousands of independent and inter-connected blockchains. Instead of executing the drand verification on the chain of the dapp, the Nois chain is acting as the randomness layer in the Cosmos ecosystem which is available via IBC.</p>
+<p>We believe the burden of implementing drand verification once per contract or even once per blockchain is too much in an ecosystem that is preparing for thousands of independent and interconnected blockchains. Instead of executing the drand verification on the chain of the dapp, the Nois chain is acting as the randomness layer in the Cosmos ecosystem which is available via IBC.</p>
 <h2 id="architecture"><a class="header" href="#architecture">Architecture</a></h2>
 <p><img src="img/diagram.png" alt="Diagram" title="Diagram" />
 Multiple actors are involved in the Nois system:</p>
@@ -167,10 +167,10 @@ chain. They are responsible for executing the transactions and run a consensus
 on the output.</li>
 <li>Nois bots are responsible for fetching the randomness from the drand network
 and submits it to the Nois smart contract that verifies it.</li>
-<li>Nois smart contract contains the logic to verify a drand randomness but also
+<li>Nois smart contract contains the logic to verify a drand randomness, but also
 to incentivize the Nois bots and is the recipient of any IBC calls made on
 other chains.</li>
-<li>Nois proxy contract lives on any enduser chain (e.g. Juno, Osmosis etc) and is
+<li>Nois proxy contract lives on any end user chain (e.g. Juno, Osmosis etc) and is
 the main entry point for users to fetch randomness from.</li>
 <li>IBC relayers are responsible for relaying the randomness from the Nois smart
 contract to the Proxy contract.</li>
@@ -178,10 +178,10 @@ contract to the Proxy contract.</li>
 <h2 id="workflow"><a class="header" href="#workflow">Workflow</a></h2>
 <p>The following steps are taken to get the randomness:</p>
 <ol>
-<li>Contract on a CosmWasm-enabled chain sends a message to a Nois proxy contract on the same chain. A reply with further information regarding the job is sent to the original contract.</li>
-<li>The proxy contract sends an IBC message to its couter-part on the Nois Network where the job is put in the queue.</li>
+<li>A contract on a CosmWasm-enabled chain sends a message to a Nois proxy contract on the same chain. A reply with further information regarding the job is sent to the original contract.</li>
+<li>The proxy contract sends an IBC message to its counter-part on the Nois Network, where the job is put in the queue.</li>
 <li>Once the drand beacon of the correct round is released, Nois bots send it to the Nois smart contract for verification, as a transaction.</li>
-<li>After successful verfication, the pending jobs for the round are processed. For every matching job, an IBC response with the beacon is sent, thanks to the IBC relayers.</li>
+<li>After successful verification, the pending jobs for the round are processed. For every matching job, an IBC response with the beacon is sent, thanks to the IBC relayers.</li>
 <li>The proxy contract receives the beacon and sends a callback to the original contract.</li>
 </ol>
 

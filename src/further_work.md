@@ -8,7 +8,7 @@ We'll closely follow the development of IBC queries, which is a technology we as
 
 ## Alternative Entropy Sources
 
-We love what drand and the League of Entropy brought to the internet, which is nothing less than the first decentralized entropy source. But choice is important. Some applications may wish to sacrifice some of the security properties in order to get faster and cheaper randomness. Some users might demand governance voting for drand [MPC] participants. The options are to be explored but the network will be designed for multiple sources.
+We love what drand and the League of Entropy brought to the internet, which is nothing less than the first decentralized entropy source. But choice is important. Some applications may wish to sacrifice some of the security properties in order to get faster and cheaper randomness. Some users might demand governance voting for drand [MPC] participants. The options are to be explored, but the network will be designed for multiple sources.
 
 ## Internalizing randomness generation
 

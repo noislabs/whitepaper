@@ -16,7 +16,7 @@ The API is also offering more advanced entry points that need to be dealt with c
 
 On top of this API, we offer a general toolbox that offers a handful of methods such as:
 * `randFloat(seed)` that derives a random number between 0 and 1 from the randomness seed
-* `range(seed, min,max)` that returns a random integer in the `[min,max(` range
+* `range(seed, min, max)` that returns a random integer in the `[min,max(` range
 * `shuffle(seed, list)` that shuffles a given list given the randomness seed
 
 The team have seen many insecure implementations of these functions in the wild, and we believe it is important to provide

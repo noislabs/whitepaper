@@ -19,7 +19,7 @@ A drand verifier that is accessible via IBC can be implemented on an existing ch
   The tooling and people are ready for many chains.
 - In a world with competing app chains that host our users, running on one of those chains makes us biased towards this chain.
   Being neutral regarding chains is very helpful in politics.
-- The randomness chain would not halt if the smart contract halts.
+- The randomness chain would not halt if the smart contract chain halts.
 - The ability to create overlapping validator and drand MPC sets is a way to incentivise drand node operators and get new players into Cosmos.
 - The following optimizations are possible:
   1. The drand verification contract is 550 KB large. Terrand had to split the code in two contracts to deploy it to Terra.

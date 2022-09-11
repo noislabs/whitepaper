@@ -14,7 +14,7 @@ We love what drand and the League of Entropy brought to the internet, which is n
 
 The node operators of the Nois Network could integrate randomness generation into their own operations. There has been work to [integrate random beacons into Tendermint](https://medium.com/@dgaminghub/arcade-tendermint-hack-with-built-in-threshold-bls-random-beacon-for-applications-a51eafb77f53) that could be explored. But also a second process that runs along with the validator node would be an option.
 
-## More features 
+## More features
 
 Drand is releasing a timed encryption feature that is using the drand randomness
 as a basis. Integrating that with Nois Network would make sense and offer the

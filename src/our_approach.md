@@ -2,7 +2,6 @@
 
 Nois Network aims to provide a safe and secure solution native to the IBC world and to provide the best possible user experience for a wide range of applications.
 
-
 In contrast to other consensus algorithms, Tendermint-based blockchains do not
 need or provide randomness at block production layer. Therefore, for our first iteration,
 we are building our stack entirely on the application level of the chain (i.e.
@@ -27,17 +26,18 @@ We believe the burden of implementing drand verification once per contract or ev
 
 ![Diagram](img/diagram.png "Diagram")
 Multiple actors are involved in the Nois system:
-* Nois validators: these are the nodes that create and validate blocks on our
+
+- Nois validators: these are the nodes that create and validate blocks on our
   chain. They are responsible for executing the transactions and run a consensus
   on the output.
-* Nois bots are responsible for fetching the randomness from the drand network
+- Nois bots are responsible for fetching the randomness from the drand network
   and submits it to the Nois smart contract that verifies it.
-* Nois smart contract contains the logic to verify a drand randomness, but also
+- Nois smart contract contains the logic to verify a drand randomness, but also
   to incentivize the Nois bots and is the recipient of any IBC calls made on
   other chains.
-* Nois proxy contract lives on any end user chain (e.g. Juno, Osmosis etc) and is
+- Nois proxy contract lives on any end user chain (e.g. Juno, Osmosis etc) and is
   the main entry point for users to fetch randomness from.
-* IBC relayers are responsible for relaying the randomness from the Nois smart
+- IBC relayers are responsible for relaying the randomness from the Nois smart
   contract to the Proxy contract.
 
 ## Workflow

@@ -24,7 +24,7 @@ Once those steps are done, the callback is executed within 30 seconds of publish
 ## Choice of round
 
 <!---
-XXX Do we really need this ? I really dont get why we need a safety margin: at the point in time where the dapp request noise.getNextRandomness() then at this point, regardless of how th request is handled, the randomness is gonna come from a future round, so the app has nothing to worry about. 
+XXX Do we really need this ? I really dont get why we need a safety margin: at the point in time where the dapp request noise.getNextRandomness() then at this point, regardless of how th request is handled, the randomness is gonna come from a future round, so the app has nothing to worry about.
 What I am missing ?
 -->
 
@@ -56,7 +56,6 @@ This calculation can be generalized if an end time should be set in advance inst
 ## Short Block Times
 
 The Nois network can consider reducing block times from the typical 5-7 seconds in Cosmos to something shorter. Doing so has to be carefully tested in environments with many globally distributed validators. Fortunately, there has been teams successfully testing 1s block times and thus we believe it's a viable path forward. [1](https://twitter.com/fekunze/status/1542490680446050304), [2](https://twitter.com/crypto25807202/status/1551197364529967104), [3](https://docs.seinetwork.io/introduction/overview)
-
 
 ## Process all drand rounds
 

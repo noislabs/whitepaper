@@ -11,13 +11,17 @@ be consumed onchain only via the usage of a simple library.
 
 In the first iteration, Nois will use random beacons produced by the [drand] network, which is powered by a consortium of participants that generate randomness using multi-party computation. Each randomness is associated with a round and is delivered periodically, i.e. there is a bijective mapping between the drand round and the wallclock time. The randomness is based from BLS threshold signatures, which produces unpredictable values that cannot be manipulated by any of the drand participants. The drand mainnet is instantiated by the [Legue of Entropy][loe], which has been operating it in production for more than two years. For example, Filecoin relies on drand for block production and its storage proofs.
 
-Drand random beacons can be submitted to blockchains that perform BLS signature verification. This way, we can build a random oracle that securely brings randomness on chain. This method was [described and proven in 2020 for CosmWasm](https://medium.com/@simonwarta/when-your-blockchain-needs-to-roll-the-dice-ed9da121f590). A few months later, this proof of concept was turned into production by [Terrand](https://docs.terrand.dev/). BLS verification is a computationally heavy operation, but leveraging the strength of the Rust optimizer and Wasm's near native execution speed, Drand beacons could be verified for less than $3 in gas fees on Terra.
+Drand random beacons can be submitted to blockchains that perform BLS signature verification. This way, we can build a random oracle that securely brings randomness on chain. This method was [described and proven in 2020 for CosmWasm](https://medium.com/@simonwarta/when-your-blockchain-needs-to-roll-the-dice-ed9da121f590).
+A few months later, this proof of concept was turned into production by [Terrand](https://docs.terrand.dev/). BLS verification is a computationally heavy operation, but leveraging the strength of the Rust optimizer and Wasm's near native execution speed, drand beacons could be verified for less than $3 in gas fees on Terra.
 
 The next step in the evolution is to make drand beacons easily accessible by as many dapps as possible in a way that is easy to use and affordable. In an ideal world, a dapp developer would just do something like this:
 
 ```rust
 // pseudo-code
-let beacon: [u8; 32] = await getRandom();
+let beacon: [u8; 32] = await getNextRandomness();
+
+let [dice1, dice2] = ints_in_range(randomness, 1..=6);
+let double_dice = dice1 + dice2;
 ```
 
 We believe the burden of implementing drand verification once per contract or even once per blockchain is too much in an ecosystem that is preparing for thousands of independent and interconnected blockchains. Instead of executing the drand verification on the chain of the dapp, the Nois chain is acting as the randomness layer in the Cosmos ecosystem which is available via IBC.

@@ -143,17 +143,22 @@
 <h2 id="definitions"><a class="header" href="#definitions">Definitions</a></h2>
 <p>In this context we talk about public randomness, i.e. values that are unpredictable for all participants but once they are revealed, they are free to share. Private randomness that needs to be kept secret by one or some participants is out of scope for this document.</p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="abstract"><a class="header" href="#abstract">Abstract</a></h1>
-<p>Randomness is a basic building block for all sorts of applications. The use case ranges from lotteries that fully rely on randomness over games that may have some random elements to probabilistic modeling, simulations and governance applications.</p>
-<p>Blockchains are systems in which every node in a decentralized network can validate the state of a replicated database by independently executing transactions and comparing the results. In order to do that, all computations need to be deterministic. The operations performed on blockchains get more sophisticated every year. While Bitcoin only allows token sends, the next generation brought Turing-complete computations on chain (Ethereum), creating complex financial products and the first governance applications. Today we are seeing this idea leveraged more and more as the price for execution drops significantly on Layer 2 solutions and independent blockchains in Cosmos<sup>1</sup>. The usage of WebAssembly brings a sandboxing technology to blockchains that was designed to run at near native speed on today's CPUs (CosmWasm, NEAR). Multiple projects are working on rich governance applications and games<sup>2</sup>.</p>
+<p>Randomness is a basic building block for all sorts of applications.
+The use cases range from lotteries that fully rely on randomness over games that may have some random elements to probabilistic modeling, simulations and governance applications.</p>
+<p>Blockchains are systems in which every node in a decentralized network can validate the state of a replicated database by independently executing transactions and comparing the results. In order to do that, all computations need to be deterministic. The operations performed on blockchains get more sophisticated every year. While Bitcoin only allows token sends, the next generation brought Turing-complete computations on chain (Ethereum), creating complex financial products and the first governance applications. Today we are seeing this idea leveraged more and more as the price for execution drops significantly on Layer 2 solutions and independent blockchains in Cosmos<sup class="footnote-reference"><a href="#1">1</a></sup>. The usage of WebAssembly brings a sandboxing technology to blockchains that was designed to run at near native speed on today's CPUs (CosmWasm, NEAR). Multiple projects are working on rich governance applications and games<sup class="footnote-reference"><a href="#2">2</a></sup>.</p>
 <p>Within these new applications, the access to a secure <em>public</em> source of
 randomness has been an unsolved growing need. For example, games need randomness
 to distribute new random items as NFTs in game or lottery platforms need true
 unbiased randomness to draw the winner. Unfortunately, current applications draw
 randomness from insecure sources such as block hash and timestamp.</p>
 <p>In this document we describe how Nois brings publicly-verifiable, unbiasable and decentralised randomness on chain and distributes it to a multitude of other IBC enabled chains in a very secure, fast, decentralised, cost-efficient, and developer-focused manner.</p>
-<h2 id="footnotes"><a class="header" href="#footnotes">Footnotes</a></h2>
-<p><sup>1</sup> Cosmos referes to the ecosystem of independent blockchains that communicate via IBC, not the Cosmos Hub.</p>
-<p><sup>2</sup> TODO: provide examples</p>
+<div class="footnote-definition" id="1"><sup class="footnote-definition-label">1</sup>
+<p>Cosmos referes to the ecosystem of independent blockchains that communicate via IBC, not the Cosmos Hub.</p>
+</div>
+<!-- Comment to prevent prettier from merging lines -->
+<div class="footnote-definition" id="2"><sup class="footnote-definition-label">2</sup>
+<p>TODO: provide examples</p>
+</div>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="the-naive-approach"><a class="header" href="#the-naive-approach">The Naive Approach</a></h1>
 <p>Blockchain applications can access certain information from the environment, that are deterministic and appear to be random at first glance. But usually those values are predictable or can be manipulated. E.g.</p>
 <ol>
@@ -175,12 +180,16 @@ as a collection of smart contracts and offchain bots). This design decision
 makes it really easy for developers to use our technology since randomness can
 be consumed onchain only via the usage of a simple library.</p>
 <p>In the first iteration, Nois will use random beacons produced by the <a href="https://drand.love">drand</a> network, which is powered by a consortium of participants that generate randomness using multi-party computation. Each randomness is associated with a round and is delivered periodically, i.e. there is a bijective mapping between the drand round and the wallclock time. The randomness is based from BLS threshold signatures, which produces unpredictable values that cannot be manipulated by any of the drand participants. The drand mainnet is instantiated by the <a href="https://en.wikipedia.org/wiki/League_of_entropy">Legue of Entropy</a>, which has been operating it in production for more than two years. For example, Filecoin relies on drand for block production and its storage proofs.</p>
-<p>Drand random beacons can be submitted to blockchains that perform BLS signature verification. This way, we can build a random oracle that securely brings randomness on chain. This method was <a href="https://medium.com/@simonwarta/when-your-blockchain-needs-to-roll-the-dice-ed9da121f590">described and proven in 2020 for CosmWasm</a>. A few months later, this proof of concept was turned into production by <a href="https://docs.terrand.dev/">Terrand</a>. BLS verification is a computationally heavy operation, but leveraging the strength of the Rust optimizer and Wasm's near native execution speed, Drand beacons could be verified for less than $3 in gas fees on Terra.</p>
+<p>Drand random beacons can be submitted to blockchains that perform BLS signature verification. This way, we can build a random oracle that securely brings randomness on chain. This method was <a href="https://medium.com/@simonwarta/when-your-blockchain-needs-to-roll-the-dice-ed9da121f590">described and proven in 2020 for CosmWasm</a>.
+A few months later, this proof of concept was turned into production by <a href="https://docs.terrand.dev/">Terrand</a>. BLS verification is a computationally heavy operation, but leveraging the strength of the Rust optimizer and Wasm's near native execution speed, drand beacons could be verified for less than $3 in gas fees on Terra.</p>
 <p>The next step in the evolution is to make drand beacons easily accessible by as many dapps as possible in a way that is easy to use and affordable. In an ideal world, a dapp developer would just do something like this:</p>
 <pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
 </span>// pseudo-code
-let beacon: [u8; 32] = await getRandom();
+let beacon: [u8; 32] = await getNextRandomness();
+
+let [dice1, dice2] = ints_in_range(randomness, 1..=6);
+let double_dice = dice1 + dice2;
 <span class="boring">}
 </span></code></pre></pre>
 <p>We believe the burden of implementing drand verification once per contract or even once per blockchain is too much in an ecosystem that is preparing for thousands of independent and interconnected blockchains. Instead of executing the drand verification on the chain of the dapp, the Nois chain is acting as the randomness layer in the Cosmos ecosystem which is available via IBC.</p>
@@ -217,17 +226,17 @@ dapps. We assume the following threat model:</p>
 <p>At the moment, the Nois Network relies on the
 drand network. Drand relies on honest majority assumption, i.e. more than 50%
 of the drand operators must be honest, and so far this assumption has held in
-practice thanks to the variety in terms of nodes: different jurisdictions, platforms, 
+practice thanks to the variety in terms of nodes: different jurisdictions, platforms,
 OS, and deployments. Drand has stood up through time as it is being used by multiple projects,
 including the popular Filecoin blockchain for more than 2 years without a single <a href="https://status.drand.love/">downtime</a>.</p>
 <h2 id="security-of-the-nois-network"><a class="header" href="#security-of-the-nois-network">Security of the Nois Network</a></h2>
 <p>This is a new Cosmos based chain and therefore
 there is a list of validators responsible for running the consensus. On Cosmos
 the validators are ranked by reputation (highest uptime, number of chains etc).
-This list provides a reliable source of validators already. The consensus relies 
-on the supermajority assumption, i.e. 2/3 + 1 of total stake must be held by 
+This list provides a reliable source of validators already. The consensus relies
+on the supermajority assumption, i.e. 2/3 + 1 of total stake must be held by
 honest validators.
-In the future, we want to expand our validator set to be more permissionless but 
+In the future, we want to expand our validator set to be more permissionless but
 also containing some independent organizations similar to the drand network.</p>
 <p>Given these two assumptions, the security of the model is pretty straightforward:</p>
 <ul>
@@ -240,7 +249,7 @@ already validated</li>
 <h2 id="application-security"><a class="header" href="#application-security">Application Security</a></h2>
 <p>Similar to regular applications, handling randomness is not a trivial task, and
 a large number of vulnerabilities have had origins in the way to handle
-randomness. 
+randomness.
 Dapps need to have a randomness which has not been seen or biased with until a
 certain point in time. For example, take a lottery dapps, no one should know the
 randomness before the time allocated, otherwise one can cheat easily by
@@ -268,7 +277,7 @@ for a certain number of use cases still.</p>
 <p>Once those steps are done, the callback is executed within 30 seconds of publishing. On a well configured network, and depending on the block time, average timings can be much faster though.</p>
 <h2 id="choice-of-round"><a class="header" href="#choice-of-round">Choice of round</a></h2>
 <!---
-XXX Do we really need this ? I really dont get why we need a safety margin: at the point in time where the dapp request noise.getNextRandomness() then at this point, regardless of how th request is handled, the randomness is gonna come from a future round, so the app has nothing to worry about. 
+XXX Do we really need this ? I really dont get why we need a safety margin: at the point in time where the dapp request noise.getNextRandomness() then at this point, regardless of how th request is handled, the randomness is gonna come from a future round, so the app has nothing to worry about.
 What I am missing ?
 -->
 <p>The application needs to commit to a round number before the beacon is revealed.
@@ -341,7 +350,7 @@ In this spirit, our proxy contract have a main entry point:</p>
 <pre><code>getNextRandomness()
 </code></pre>
 <p>which will automatically calculate the next drand round and return the associated randomness via an IBC callback.
-The developer does not have to think about when should he ask randomness nor how. We believe that this single API call 
+The developer does not have to think about when should he ask randomness nor how. We believe that this single API call
 will be able to fit most uses cases using randomness onchain.
 The API is also offering more advanced entry points that need to be dealt with care for specific applications.</p>
 <h2 id="library"><a class="header" href="#library">Library</a></h2>

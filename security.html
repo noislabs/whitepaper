@@ -147,17 +147,17 @@ dapps. We assume the following threat model:</p>
 <p>At the moment, the Nois Network relies on the
 drand network. Drand relies on honest majority assumption, i.e. more than 50%
 of the drand operators must be honest, and so far this assumption has held in
-practice thanks to the variety in terms of nodes: different jurisdictions, platforms, 
+practice thanks to the variety in terms of nodes: different jurisdictions, platforms,
 OS, and deployments. Drand has stood up through time as it is being used by multiple projects,
 including the popular Filecoin blockchain for more than 2 years without a single <a href="https://status.drand.love/">downtime</a>.</p>
 <h2 id="security-of-the-nois-network"><a class="header" href="#security-of-the-nois-network">Security of the Nois Network</a></h2>
 <p>This is a new Cosmos based chain and therefore
 there is a list of validators responsible for running the consensus. On Cosmos
 the validators are ranked by reputation (highest uptime, number of chains etc).
-This list provides a reliable source of validators already. The consensus relies 
-on the supermajority assumption, i.e. 2/3 + 1 of total stake must be held by 
+This list provides a reliable source of validators already. The consensus relies
+on the supermajority assumption, i.e. 2/3 + 1 of total stake must be held by
 honest validators.
-In the future, we want to expand our validator set to be more permissionless but 
+In the future, we want to expand our validator set to be more permissionless but
 also containing some independent organizations similar to the drand network.</p>
 <p>Given these two assumptions, the security of the model is pretty straightforward:</p>
 <ul>
@@ -170,7 +170,7 @@ already validated</li>
 <h2 id="application-security"><a class="header" href="#application-security">Application Security</a></h2>
 <p>Similar to regular applications, handling randomness is not a trivial task, and
 a large number of vulnerabilities have had origins in the way to handle
-randomness. 
+randomness.
 Dapps need to have a randomness which has not been seen or biased with until a
 certain point in time. For example, take a lottery dapps, no one should know the
 randomness before the time allocated, otherwise one can cheat easily by

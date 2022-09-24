@@ -5,6 +5,4 @@ Nois Network aims to bring randomness (or noise) to the Cosmos ecosystem by prov
 [cryptographic-beacons]: http://www.copenhagen-interpretation.com/home/cryptography/cryptographic-beacons
 [ibc]: https://ibc.cosmos.network/
 
-## Definitions
-
-In this context we talk about public randomness, i.e. values that are unpredictable for all participants but once they are revealed, they are free to share. Private randomness that needs to be kept secret by one or some participants is out of scope for this document.
+More precisely, Nois provides **public randomness**, i.e. values that are unpredictable for all participants of the system but free to share once published. Private randomness that needs to be kept secret is out of scope for this whitepaper.

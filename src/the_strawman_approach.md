@@ -1,4 +1,4 @@
-# The Naive Approach
+# The Strawman Approach
 
 Blockchain applications can access certain information from the environment, that are deterministic and appear to be random at first glance. But usually those values are predictable or can be manipulated. E.g.
 

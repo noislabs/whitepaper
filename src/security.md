@@ -41,9 +41,11 @@ certain point in time. For example, take a lottery dapps, no one should know the
 randomness before the time allocated, otherwise one can cheat easily by
 submitting the right ticket. At the time the lottery finish, a dapp should ask
 for the _next_ randomness being available. This is exactly the main API endpoint
-Nois contracts are offering. This reduces the chance of using the randomness
-source "insecurely".
+the Nois contract is offering: `GetNextRandomness { .. }`.
+This reduces the chance of using the randomness source insecurely compared to lower
+level APIs.
 
-We may also offer a "getRandomness(round)" endpoint that is to manipulate with care,
-only for dapps developers that exactly know what they way, as this can be useful
-for a certain number of use cases still.
+For advanced use cases we also offer a `GetRandomnessAfter { .. }` request type,
+which allows requesting future randomness (e.g. 24h after the request) and receive it
+automatically once available. Using this securely is more challenging and this is only
+recommended for apps that have special needs and are aware of the risks.

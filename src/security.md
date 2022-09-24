@@ -25,11 +25,11 @@ also containing some independent organizations similar to the drand network.
 
 Given these two assumptions, the security of the model is pretty straightforward:
 
-- The Nois smart contract guarantees the correct verification of any beacons
+- The Nois Oracle contract guarantees the correct verification of all beacons
   submitted to it.
-- The Nois chain guarantees the correct logic execution of the Nois smart
+- The Nois chain guarantees the correct logic execution of the Nois Oracle
   contract, i.e. it will reply to IBC beacon requests with exactly the correct beacon,
-  already validated
+  already validated.
 
 ## Application Security
 

@@ -143,21 +143,23 @@
                         <h1 id="developer-friendly"><a class="header" href="#developer-friendly">Developer Friendly</a></h1>
 <h2 id="noise-proxy-contract"><a class="header" href="#noise-proxy-contract">Noise Proxy Contract</a></h2>
 <p>Nois is meant to be a layer on top of which dapps can tap into. Therefore, its usage must be as simple as possible and not less.
-In this spirit, our proxy contract have a main entry point:</p>
-<pre><code>getNextRandomness()
+In this spirit, our proxy contract has a main entry point:</p>
+<pre><code>GetNextRandomness { .. }
 </code></pre>
-<p>which will automatically calculate the next drand round and return the associated randomness via an IBC callback.
+<p>which will automatically calculate the next drand round and return the associated randomness via a callback.
 The developer does not have to think about when should he ask randomness nor how. We believe that this single API call
 will be able to fit most uses cases using randomness onchain.
 The API is also offering more advanced entry points that need to be dealt with care for specific applications.</p>
-<h2 id="library"><a class="header" href="#library">Library</a></h2>
-<p>On top of this API, we offer a general toolbox that offers a handful of methods such as:</p>
+<h2 id="standard-library"><a class="header" href="#standard-library">Standard Library</a></h2>
+<p>On top of this API, we offer a toolbox that contains functions
+to convert the randomness to values usable in the application, such as:</p>
 <ul>
-<li><code>randFloat(seed)</code> that derives a random number between 0 and 1 from the randomness seed</li>
-<li><code>range(seed, min, max)</code> that returns a random integer in the <code>[min,max(</code> range</li>
-<li><code>shuffle(seed, list)</code> that shuffles a given list given the randomness seed</li>
+<li><code>coinflip(seed)</code> that returns heads or tails</li>
+<li><code>random_decimal(seed)</code> that returns a number between 0 and 1</li>
+<li><code>int_in_range(seed, min, max)</code> that returns a random integer in the <code>[min,max(</code> range</li>
+<li><code>shuffle(seed, list)</code> that shuffles a given list</li>
 </ul>
-<p>The team have seen many insecure implementations of these functions in the wild, and we believe it is important to provide
+<p>The team has seen many insecure implementations of these functions in the wild, and we believe it is important to provide
 them as part of the Nois ecosystem to incentivize dapps developer to create secure and robust applications.</p>
 
                     </main>

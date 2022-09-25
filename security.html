@@ -161,11 +161,11 @@ In the future, we want to expand our validator set to be more permissionless but
 also containing some independent organizations similar to the drand network.</p>
 <p>Given these two assumptions, the security of the model is pretty straightforward:</p>
 <ul>
-<li>The Nois smart contract guarantees the correct verification of any beacons
+<li>The Nois Oracle contract guarantees the correct verification of all beacons
 submitted to it.</li>
-<li>The Nois chain guarantees the correct logic execution of the Nois smart
+<li>The Nois chain guarantees the correct logic execution of the Nois Oracle
 contract, i.e. it will reply to IBC beacon requests with exactly the correct beacon,
-already validated</li>
+already validated.</li>
 </ul>
 <h2 id="application-security"><a class="header" href="#application-security">Application Security</a></h2>
 <p>Similar to regular applications, handling randomness is not a trivial task, and
@@ -176,11 +176,13 @@ certain point in time. For example, take a lottery dapps, no one should know the
 randomness before the time allocated, otherwise one can cheat easily by
 submitting the right ticket. At the time the lottery finish, a dapp should ask
 for the <em>next</em> randomness being available. This is exactly the main API endpoint
-Nois contracts are offering. This reduces the chance of using the randomness
-source &quot;insecurely&quot;.</p>
-<p>We may also offer a &quot;getRandomness(round)&quot; endpoint that is to manipulate with care,
-only for dapps developers that exactly know what they way, as this can be useful
-for a certain number of use cases still.</p>
+the Nois contract is offering: <code>GetNextRandomness { .. }</code>.
+This reduces the chance of using the randomness source insecurely compared to lower
+level APIs.</p>
+<p>For advanced use cases we also offer a <code>GetRandomnessAfter { .. }</code> request type,
+which allows requesting future randomness (e.g. 24h after the request) and receive it
+automatically once available. Using this securely is more challenging and this is only
+recommended for apps that have special needs and are aware of the risks.</p>
 
                     </main>
 

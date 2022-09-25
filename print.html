@@ -140,8 +140,7 @@
                     <main>
                         <h1 id="nois-network"><a class="header" href="#nois-network">Nois Network</a></h1>
 <p>Nois Network aims to bring randomness (or noise) to the Cosmos ecosystem by providing a safe and secure entropy source and distributing randomness in the form of <a href="http://www.copenhagen-interpretation.com/home/cryptography/cryptographic-beacons">random beacons</a> to other Cosmos blockchains via <a href="https://ibc.cosmos.network/">IBC</a>.</p>
-<h2 id="definitions"><a class="header" href="#definitions">Definitions</a></h2>
-<p>In this context we talk about public randomness, i.e. values that are unpredictable for all participants but once they are revealed, they are free to share. Private randomness that needs to be kept secret by one or some participants is out of scope for this document.</p>
+<p>More precisely, Nois provides <strong>public randomness</strong>, i.e. values that are unpredictable for all participants of the system but free to share once published. Private randomness that needs to be kept secret is out of scope for this whitepaper.</p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="abstract"><a class="header" href="#abstract">Abstract</a></h1>
 <p>Randomness is a basic building block for all sorts of applications.
 The use cases range from lotteries that fully rely on randomness over games that may have some random elements to probabilistic modeling, simulations and governance applications.</p>
@@ -159,16 +158,16 @@ randomness from insecure sources such as block hash and timestamp.</p>
 <div class="footnote-definition" id="2"><sup class="footnote-definition-label">2</sup>
 <p>TODO: provide examples</p>
 </div>
-<div style="break-before: page; page-break-before: always;"></div><h1 id="the-naive-approach"><a class="header" href="#the-naive-approach">The Naive Approach</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="the-strawman-approach"><a class="header" href="#the-strawman-approach">The Strawman Approach</a></h1>
 <p>Blockchain applications can access certain information from the environment, that are deterministic and appear to be random at first glance. But usually those values are predictable or can be manipulated. E.g.</p>
 <ol>
-<li>Solidity's <code>block.timestamp</code> can be set by the miner.</li>
+<li>Solidity's <code>block.timestamp</code> is set by a single miner.</li>
 <li>Solidity's <code>blockhash</code> is a value the miner can influence.</li>
 <li>The block time of Tendermint (<a href="https://docs.tendermint.com/master/spec/consensus/bft-time.html">BFT Time</a>) is of low entropy and can be influenced.</li>
-<li>CosmWasm team decided to <a href="https://github.com/CosmWasm/wasmvm/issues/133">not expose block hash</a> as this may falsely be assumed to be unpredictable but can be influenced by the block proposer.</li>
-<li>Block height has very low entropy as the height in which a transaction is included can be guessed.</li>
+<li>Block height has very low entropy as the height in which a transaction is included can easily be guessed.</li>
 <li>Another thing that was spotted in the wild is using signatures as randomness. A pre-defined signer is asked to sign a given challenge. However, <a href="https://medium.com/@simonwarta/signature-determinism-for-blockchain-developers-dbd84865a93e">it turns out</a> that common signing algorithms produce a deterministic but not unique signature, such that the signer can choose whatever value suits them.</li>
 </ol>
+<p>To mitigate the risk of misuse, the CosmWasm maintainers decided to <a href="https://github.com/CosmWasm/wasmvm/issues/133">not expose block hash</a> as this may falsely be assumed to be unpredictable but can be influenced by the block proposer.</p>
 <p>To get reliable randomness, we need to rely on better technology which may not
 be embedded in the native blockchain.</p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="our-approach"><a class="header" href="#our-approach">Our Approach</a></h1>
@@ -179,9 +178,10 @@ we are building our stack entirely on the application level of the chain (i.e.
 as a collection of smart contracts and offchain bots). This design decision
 makes it really easy for developers to use our technology since randomness can
 be consumed onchain only via the usage of a simple library.</p>
-<p>In the first iteration, Nois will use random beacons produced by the <a href="https://drand.love">drand</a> network, which is powered by a consortium of participants that generate randomness using multi-party computation. Each randomness is associated with a round and is delivered periodically, i.e. there is a bijective mapping between the drand round and the wallclock time. The randomness is based from BLS threshold signatures, which produces unpredictable values that cannot be manipulated by any of the drand participants. The drand mainnet is instantiated by the <a href="https://en.wikipedia.org/wiki/League_of_entropy">Legue of Entropy</a>, which has been operating it in production for more than two years. For example, Filecoin relies on drand for block production and its storage proofs.</p>
+<p>In the first iteration, Nois will use random beacons produced by the <a href="https://drand.love">drand</a> network, which is powered by a consortium of participants that generate randomness using multi-party computation. Each randomness is associated with a round and is delivered periodically, i.e. there is a bijective mapping between the drand round and the wallclock time. The randomness is based on a BLS threshold signatures schema, which produces unpredictable values that cannot be manipulated by any of the drand participants. The drand mainnet is instantiated by the <a href="https://en.wikipedia.org/wiki/League_of_entropy">Legue of Entropy</a>, which has been operating it in production for more than two years. For example, Filecoin relies on drand for block production and its storage proofs.</p>
 <p>Drand random beacons can be submitted to blockchains that perform BLS signature verification. This way, we can build a random oracle that securely brings randomness on chain. This method was <a href="https://medium.com/@simonwarta/when-your-blockchain-needs-to-roll-the-dice-ed9da121f590">described and proven in 2020 for CosmWasm</a>.
-A few months later, this proof of concept was turned into production by <a href="https://docs.terrand.dev/">Terrand</a>. BLS verification is a computationally heavy operation, but leveraging the strength of the Rust optimizer and Wasm's near native execution speed, drand beacons could be verified for less than $3 in gas fees on Terra.</p>
+A few months later, this proof of concept was turned into production by <a href="https://docs.terrand.dev/">Terrand</a>.
+BLS verification is a computationally heavy operation, but leveraging the strength of the Rust optimizer and Wasm's near native execution speed, drand beacons could be verified for less than $3 in gas fees on Terra.</p>
 <p>The next step in the evolution is to make drand beacons easily accessible by as many dapps as possible in a way that is easy to use and affordable. In an ideal world, a dapp developer would just do something like this:</p>
 <pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
@@ -201,19 +201,19 @@ Multiple actors are involved in the Nois system:</p>
 chain. They are responsible for executing the transactions and run a consensus
 on the output.</li>
 <li>Nois bots are responsible for fetching the randomness from the drand network
-and submits it to the Nois smart contract that verifies it.</li>
-<li>Nois smart contract contains the logic to verify a drand randomness, but also
-to incentivize the Nois bots and is the recipient of any IBC calls made on
+and submit it to the Nois Oracle contract that verifies it.</li>
+<li>Nois Oracle contract contains the logic to verify a drand randomness, but also
+to incentivize the Nois bots and is the recipient of any IBC messages made on
 other chains.</li>
-<li>Nois proxy contract lives on any end user chain (e.g. Juno, Osmosis etc) and is
+<li>Nois proxy contract lives on any end user chain (e.g. Juno, Stargaze, Osmosis) and is
 the main entry point for users to fetch randomness from.</li>
-<li>IBC relayers are responsible for relaying the randomness from the Nois smart
+<li>IBC relayers are responsible for relaying the randomness from the Nois Oracle
 contract to the Proxy contract.</li>
 </ul>
 <h2 id="workflow"><a class="header" href="#workflow">Workflow</a></h2>
 <p>The following steps are taken to get the randomness:</p>
 <ol>
-<li>A contract on a CosmWasm-enabled chain sends a message to a Nois proxy contract on the same chain. A reply with further information regarding the job is sent to the original contract.</li>
+<li>A contract on a CosmWasm-enabled chain sends a message to a Nois proxy contract on the same chain.</li>
 <li>The proxy contract sends an IBC message to its counter-part on the Nois Network, where the job is put in the queue.</li>
 <li>Once the drand beacon of the correct round is released, Nois bots send it to the Nois smart contract for verification, as a transaction.</li>
 <li>After successful verification, the pending jobs for the round are processed. For every matching job, an IBC response with the beacon is sent, thanks to the IBC relayers.</li>
@@ -240,11 +240,11 @@ In the future, we want to expand our validator set to be more permissionless but
 also containing some independent organizations similar to the drand network.</p>
 <p>Given these two assumptions, the security of the model is pretty straightforward:</p>
 <ul>
-<li>The Nois smart contract guarantees the correct verification of any beacons
+<li>The Nois Oracle contract guarantees the correct verification of all beacons
 submitted to it.</li>
-<li>The Nois chain guarantees the correct logic execution of the Nois smart
+<li>The Nois chain guarantees the correct logic execution of the Nois Oracle
 contract, i.e. it will reply to IBC beacon requests with exactly the correct beacon,
-already validated</li>
+already validated.</li>
 </ul>
 <h2 id="application-security"><a class="header" href="#application-security">Application Security</a></h2>
 <p>Similar to regular applications, handling randomness is not a trivial task, and
@@ -255,11 +255,13 @@ certain point in time. For example, take a lottery dapps, no one should know the
 randomness before the time allocated, otherwise one can cheat easily by
 submitting the right ticket. At the time the lottery finish, a dapp should ask
 for the <em>next</em> randomness being available. This is exactly the main API endpoint
-Nois contracts are offering. This reduces the chance of using the randomness
-source &quot;insecurely&quot;.</p>
-<p>We may also offer a &quot;getRandomness(round)&quot; endpoint that is to manipulate with care,
-only for dapps developers that exactly know what they way, as this can be useful
-for a certain number of use cases still.</p>
+the Nois contract is offering: <code>GetNextRandomness { .. }</code>.
+This reduces the chance of using the randomness source insecurely compared to lower
+level APIs.</p>
+<p>For advanced use cases we also offer a <code>GetRandomnessAfter { .. }</code> request type,
+which allows requesting future randomness (e.g. 24h after the request) and receive it
+automatically once available. Using this securely is more challenging and this is only
+recommended for apps that have special needs and are aware of the risks.</p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="performance"><a class="header" href="#performance">Performance</a></h1>
 <h2 id="commit-to-callback-time-c2c-time"><a class="header" href="#commit-to-callback-time-c2c-time">Commit to Callback Time (C2C Time)</a></h2>
 <p>Each Drand round is published at fixed points in time, calculated as follows:</p>
@@ -269,7 +271,7 @@ for a certain number of use cases still.</p>
 <p>Once this <code>publish_time</code> is reached, the randomness needs to be considered public. No matter if the chain or the contract knows the value already, any user can know the random value by observing the off-chain drand network. So it is important that after <code>publish_time</code> no actions for that round are allowed anymore. Think of it as closing submission of lottery tickets. Now the round should be processed as fast as possible in order to reveal the results and allow to continue the operation in case the next steps depend on it.</p>
 <p>The time between beacon publishing an the callback consists of the following components:</p>
 <ul>
-<li><strong>Nois bots submission:</strong> bots should observe the drand gossip network through various communication protocols. Once a new round is found, they should craft a transaction, sign it and sent it to the Nois mempool. Note that only the fastest submission of one of the bots matters. When well-connected, this should be doable in under 1 second. This layer is completely <strong>permissionless</strong>, anyone can participate and get compensated for this work.</li>
+<li><strong>Nois bots submission:</strong> bots should observe the drand gossip network through various communication protocols. Once a new round is found, they should craft a transaction, sign it and sent it to the Nois mempool. Note that only the fastest submission of one of the bots matters. When well-connected, this should be doable in under 1 second. This layer is completely permissionless, i.e. anyone can participate. Registered bot operators get compensated for this work.</li>
 <li><strong>Block inclusion time:</strong> When the beacon is in the mempool, the chain should ensure it is included in a block as fast as possible. With 5-second block times and an inclusion in the first or second block, this should be up to 10 seconds. The same transaction processes pending jobs and sends IBC messages. The block is executed in well under 1 second.</li>
 <li><strong>IBC relaying:</strong> An IBC relayer picks up the message from the Nois chain and relays it to the destination chain. This depends on well configured and well-connected relayers as well as availability of block space on the destination chain. In order to be included as fast as possible, the relayer should pay a transaction fee that is accepted by all validators. But in a high traffic situation, we don't get guarantees to be included quickly. So 5-20 seconds is a reasonable estimate.</li>
 <li><strong>Acknowledgement:</strong> An IBC acknowledgement is sent to Nois, but this is nothing the contract needs to wait for.</li>
@@ -279,6 +281,9 @@ for a certain number of use cases still.</p>
 <!---
 XXX Do we really need this ? I really dont get why we need a safety margin: at the point in time where the dapp request noise.getNextRandomness() then at this point, regardless of how th request is handled, the randomness is gonna come from a future round, so the app has nothing to worry about.
 What I am missing ?
+
+
+XXX Simon, Rewrite
 -->
 <p>The application needs to commit to a round number before the beacon is revealed.
 Fortunately we have a reliable <a href="https://docs.tendermint.com/master/spec/consensus/bft-time.html">BFT Time</a> but this is not perfectly accurate and can be behind. In case the contract thinks <code>publish_time</code> is not yet reached while the beacon is already published, an attacker can abuse the knowledge of the randomness. So we introduce a duration <code>safety_margin</code> and require <code>publish_time</code> to be at least <code>safety_margin</code> after the current BFT time (<code>block_time</code>).</p>
@@ -297,7 +302,7 @@ round &gt;= ((block_time + safety_margin - genesis) / 30) + 1
 <p>Assuming <code>safety_margin</code> is set generously to 2 seconds, the <code>round</code> calculated that way is 2-32 seconds in the future.</p>
 <p>This calculation can be generalized if an end time should be set in advance instead of closing right away. With flexible end times, the publishing times of beacons can be matched, and only the safety margin need to be considered.</p>
 <h2 id="short-block-times"><a class="header" href="#short-block-times">Short Block Times</a></h2>
-<p>The Nois network can consider reducing block times from the typical 5-7 seconds in Cosmos to something shorter. Doing so has to be carefully tested in environments with many globally distributed validators. Fortunately, there has been teams successfully testing 1s block times and thus we believe it's a viable path forward. <a href="https://twitter.com/fekunze/status/1542490680446050304">1</a>, <a href="https://twitter.com/crypto25807202/status/1551197364529967104">2</a>, <a href="https://docs.seinetwork.io/introduction/overview">3</a></p>
+<p>The Nois network can consider reducing block times from the typical 5-7 seconds in Cosmos to something shorter. Doing so has to be carefully tested in environments with many globally distributed validators. Fortunately, there has been teams successfully testing 1s block times and thus we believe it's a viable path forward (<a href="https://twitter.com/fekunze/status/1542490680446050304">1</a>, <a href="https://twitter.com/crypto25807202/status/1551197364529967104">2</a>, <a href="https://docs.seinetwork.io/introduction/overview">3</a>).</p>
 <h2 id="process-all-drand-rounds"><a class="header" href="#process-all-drand-rounds">Process all drand rounds</a></h2>
 <p>The time between the publication of a random beacon and when it becomes available on chain is
 important for the user experience. Depending on product design, this may be the time an end user
@@ -338,7 +343,7 @@ cost of verifying the beacons.</li>
 <li>CosmWasm has a somewhat unknown cronjob feature that allows governance to run contract execution in every block.
 That’s useful to e.g. process queues.</li>
 <li>We can use chain governance to upgrade the contract, which is more transparent and safer than multisig upgradability.</li>
-<li>Due to permissioned contract uploads, the use of a Wasm compiler with unbound compile time becomes possible,
+<li>Due to permissioned contract uploads, the use of a Wasm runtime backend with a slower but stronger optimizer becomes possible,
 which can lead to faster verification.</li>
 </ol>
 </li>
@@ -346,21 +351,23 @@ which can lead to faster verification.</li>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="developer-friendly"><a class="header" href="#developer-friendly">Developer Friendly</a></h1>
 <h2 id="noise-proxy-contract"><a class="header" href="#noise-proxy-contract">Noise Proxy Contract</a></h2>
 <p>Nois is meant to be a layer on top of which dapps can tap into. Therefore, its usage must be as simple as possible and not less.
-In this spirit, our proxy contract have a main entry point:</p>
-<pre><code>getNextRandomness()
+In this spirit, our proxy contract has a main entry point:</p>
+<pre><code>GetNextRandomness { .. }
 </code></pre>
-<p>which will automatically calculate the next drand round and return the associated randomness via an IBC callback.
+<p>which will automatically calculate the next drand round and return the associated randomness via a callback.
 The developer does not have to think about when should he ask randomness nor how. We believe that this single API call
 will be able to fit most uses cases using randomness onchain.
 The API is also offering more advanced entry points that need to be dealt with care for specific applications.</p>
-<h2 id="library"><a class="header" href="#library">Library</a></h2>
-<p>On top of this API, we offer a general toolbox that offers a handful of methods such as:</p>
+<h2 id="standard-library"><a class="header" href="#standard-library">Standard Library</a></h2>
+<p>On top of this API, we offer a toolbox that contains functions
+to convert the randomness to values usable in the application, such as:</p>
 <ul>
-<li><code>randFloat(seed)</code> that derives a random number between 0 and 1 from the randomness seed</li>
-<li><code>range(seed, min, max)</code> that returns a random integer in the <code>[min,max(</code> range</li>
-<li><code>shuffle(seed, list)</code> that shuffles a given list given the randomness seed</li>
+<li><code>coinflip(seed)</code> that returns heads or tails</li>
+<li><code>random_decimal(seed)</code> that returns a number between 0 and 1</li>
+<li><code>int_in_range(seed, min, max)</code> that returns a random integer in the <code>[min,max(</code> range</li>
+<li><code>shuffle(seed, list)</code> that shuffles a given list</li>
 </ul>
-<p>The team have seen many insecure implementations of these functions in the wild, and we believe it is important to provide
+<p>The team has seen many insecure implementations of these functions in the wild, and we believe it is important to provide
 them as part of the Nois ecosystem to incentivize dapps developer to create secure and robust applications.</p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="further-work"><a class="header" href="#further-work">Further Work</a></h1>
 <p>The solution above explains what we can do with technology available today. But we'll not stop there. The next steps might be the following (unsorted).</p>

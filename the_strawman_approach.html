@@ -140,16 +140,16 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1 id="the-naive-approach"><a class="header" href="#the-naive-approach">The Naive Approach</a></h1>
+                        <h1 id="the-strawman-approach"><a class="header" href="#the-strawman-approach">The Strawman Approach</a></h1>
 <p>Blockchain applications can access certain information from the environment, that are deterministic and appear to be random at first glance. But usually those values are predictable or can be manipulated. E.g.</p>
 <ol>
-<li>Solidity's <code>block.timestamp</code> can be set by the miner.</li>
+<li>Solidity's <code>block.timestamp</code> is set by a single miner.</li>
 <li>Solidity's <code>blockhash</code> is a value the miner can influence.</li>
 <li>The block time of Tendermint (<a href="https://docs.tendermint.com/master/spec/consensus/bft-time.html">BFT Time</a>) is of low entropy and can be influenced.</li>
-<li>CosmWasm team decided to <a href="https://github.com/CosmWasm/wasmvm/issues/133">not expose block hash</a> as this may falsely be assumed to be unpredictable but can be influenced by the block proposer.</li>
-<li>Block height has very low entropy as the height in which a transaction is included can be guessed.</li>
+<li>Block height has very low entropy as the height in which a transaction is included can easily be guessed.</li>
 <li>Another thing that was spotted in the wild is using signatures as randomness. A pre-defined signer is asked to sign a given challenge. However, <a href="https://medium.com/@simonwarta/signature-determinism-for-blockchain-developers-dbd84865a93e">it turns out</a> that common signing algorithms produce a deterministic but not unique signature, such that the signer can choose whatever value suits them.</li>
 </ol>
+<p>To mitigate the risk of misuse, the CosmWasm maintainers decided to <a href="https://github.com/CosmWasm/wasmvm/issues/133">not expose block hash</a> as this may falsely be assumed to be unpredictable but can be influenced by the block proposer.</p>
 <p>To get reliable randomness, we need to rely on better technology which may not
 be embedded in the native blockchain.</p>
 

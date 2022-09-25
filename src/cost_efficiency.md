@@ -32,5 +32,5 @@ A drand verifier that is accessible via IBC can be implemented on an existing ch
   4. CosmWasm has a somewhat unknown cronjob feature that allows governance to run contract execution in every block.
      That’s useful to e.g. process queues.
   5. We can use chain governance to upgrade the contract, which is more transparent and safer than multisig upgradability.
-  6. Due to permissioned contract uploads, the use of a Wasm compiler with unbound compile time becomes possible,
+  6. Due to permissioned contract uploads, the use of a Wasm runtime backend with a slower but stronger optimizer becomes possible,
      which can lead to faster verification.

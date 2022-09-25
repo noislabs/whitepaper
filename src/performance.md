@@ -14,7 +14,7 @@ Once this `publish_time` is reached, the randomness needs to be considered publi
 
 The time between beacon publishing an the callback consists of the following components:
 
-- **Nois bots submission:** bots should observe the drand gossip network through various communication protocols. Once a new round is found, they should craft a transaction, sign it and sent it to the Nois mempool. Note that only the fastest submission of one of the bots matters. When well-connected, this should be doable in under 1 second. This layer is completely **permissionless**, anyone can participate and get compensated for this work.
+- **Nois bots submission:** bots should observe the drand gossip network through various communication protocols. Once a new round is found, they should craft a transaction, sign it and sent it to the Nois mempool. Note that only the fastest submission of one of the bots matters. When well-connected, this should be doable in under 1 second. This layer is completely permissionless, i.e. anyone can participate. Registered bot operators get compensated for this work.
 - **Block inclusion time:** When the beacon is in the mempool, the chain should ensure it is included in a block as fast as possible. With 5-second block times and an inclusion in the first or second block, this should be up to 10 seconds. The same transaction processes pending jobs and sends IBC messages. The block is executed in well under 1 second.
 - **IBC relaying:** An IBC relayer picks up the message from the Nois chain and relays it to the destination chain. This depends on well configured and well-connected relayers as well as availability of block space on the destination chain. In order to be included as fast as possible, the relayer should pay a transaction fee that is accepted by all validators. But in a high traffic situation, we don't get guarantees to be included quickly. So 5-20 seconds is a reasonable estimate.
 - **Acknowledgement:** An IBC acknowledgement is sent to Nois, but this is nothing the contract needs to wait for.
@@ -58,7 +58,7 @@ This calculation can be generalized if an end time should be set in advance inst
 
 ## Short Block Times
 
-The Nois network can consider reducing block times from the typical 5-7 seconds in Cosmos to something shorter. Doing so has to be carefully tested in environments with many globally distributed validators. Fortunately, there has been teams successfully testing 1s block times and thus we believe it's a viable path forward. [1](https://twitter.com/fekunze/status/1542490680446050304), [2](https://twitter.com/crypto25807202/status/1551197364529967104), [3](https://docs.seinetwork.io/introduction/overview)
+The Nois network can consider reducing block times from the typical 5-7 seconds in Cosmos to something shorter. Doing so has to be carefully tested in environments with many globally distributed validators. Fortunately, there has been teams successfully testing 1s block times and thus we believe it's a viable path forward ([1](https://twitter.com/fekunze/status/1542490680446050304), [2](https://twitter.com/crypto25807202/status/1551197364529967104), [3](https://docs.seinetwork.io/introduction/overview)).
 
 ## Process all drand rounds
 

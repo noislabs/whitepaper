@@ -26,6 +26,9 @@ Once those steps are done, the callback is executed within 30 seconds of publish
 <!---
 XXX Do we really need this ? I really dont get why we need a safety margin: at the point in time where the dapp request noise.getNextRandomness() then at this point, regardless of how th request is handled, the randomness is gonna come from a future round, so the app has nothing to worry about.
 What I am missing ?
+
+
+XXX Simon, Rewrite
 -->
 
 The application needs to commit to a round number before the beacon is revealed.

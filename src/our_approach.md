@@ -48,7 +48,7 @@ Multiple actors are involved in the Nois system:
 
 The following steps are taken to get the randomness:
 
-1. A contract on a CosmWasm-enabled chain sends a message to a Nois proxy contract on the same chain. A reply with further information regarding the job is sent to the original contract.
+1. A contract on a CosmWasm-enabled chain sends a message to a Nois proxy contract on the same chain.
 2. The proxy contract sends an IBC message to its counter-part on the Nois Network, where the job is put in the queue.
 3. Once the drand beacon of the correct round is released, Nois bots send it to the Nois smart contract for verification, as a transaction.
 4. After successful verification, the pending jobs for the round are processed. For every matching job, an IBC response with the beacon is sent, thanks to the IBC relayers.

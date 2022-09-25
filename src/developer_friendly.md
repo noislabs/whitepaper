@@ -24,5 +24,5 @@ to convert the randomness to values usable in the application, such as:
 - `int_in_range(seed, min, max)` that returns a random integer in the `[min,max(` range
 - `shuffle(seed, list)` that shuffles a given list
 
-The team have seen many insecure implementations of these functions in the wild, and we believe it is important to provide
+The team has seen many insecure implementations of these functions in the wild, and we believe it is important to provide
 them as part of the Nois ecosystem to incentivize dapps developer to create secure and robust applications.

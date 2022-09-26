@@ -13,6 +13,7 @@ which will automatically calculate the next drand round and return the associate
 The developer does not have to think about when should he ask randomness nor how. We believe that this single API call
 will be able to fit most uses cases using randomness onchain.
 The API is also offering more advanced entry points that need to be dealt with care for specific applications.
+![Diagram](img/nois_dev_perspective.png "Diagram")
 
 ## Standard Library
 
